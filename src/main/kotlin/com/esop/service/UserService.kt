@@ -4,12 +4,14 @@ import com.esop.constant.errors
 import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
 import com.esop.dto.UserCreationDTO
+import com.esop.repository.UserRecords
 import com.esop.schema.Order
 import com.esop.schema.User
 import jakarta.inject.Singleton
 
 @Singleton
-class UserService {
+class UserService(private val userRecords: UserRecords) {
+
     companion object {
         val emailList = mutableSetOf<String>()
         val phoneNumberList = mutableSetOf<String>()
@@ -18,20 +20,22 @@ class UserService {
 
     fun orderCheckBeforePlace(order: Order): MutableList<String> {
         val errorList = mutableListOf<String>()
-        if (!userList.containsKey(order.getUserName())) {
+
+        if (!userRecords.checkIfUserExists(order.getUserName())) {
             errorList.add("User doesn't exist.")
             return errorList
         }
 
-        val user = userList[order.getUserName()]!!
+        val user = userRecords.getUser(order.getUserName())!!
         val wallet = user.userWallet
         val nonPerformanceInventory = user.userNonPerfInventory
-        val totalPrice = order.getPrice() * order.getQuantity()
+
+
 
         if (order.getType() == "BUY") {
             nonPerformanceInventory.assertInventoryWillNotOverflowOnAdding(order.getQuantity())
 
-            val response = user.lockAmount(totalPrice)
+            val response = user.userWallet.moveMoneyFromFreeToLockedState(order.getPrice() * order.getQuantity())
             if (response != "SUCCESS") {
                 errorList.add(response)
             }
@@ -39,7 +43,7 @@ class UserService {
             wallet.assertWalletWillNotOverflowOnAdding(order.getPrice() * order.getQuantity())
 
             if (order.esopType == "PERFORMANCE") {
-                val response = user.lockPerformanceInventory(order.getQuantity())
+                val response = user.userPerformanceInventory.moveESOPsFromFreeToLockedState(order.getQuantity())
                 if (response != "SUCCESS") {
                     errorList.add(response)
                 }
@@ -53,18 +57,6 @@ class UserService {
         return errorList
     }
 
-    fun checkIfUerExist(value: String): Boolean {
-        return !userList.contains(value)
-    }
-
-    fun checkIfPhoneNumberExist(phoneNumberSet: MutableSet<String>, value: String): Boolean {
-        return !phoneNumberSet.contains(value)
-    }
-
-    fun checkIfEmailExist(emailSet: MutableSet<String>, value: String): Boolean {
-        return !emailSet.contains(value)
-    }
-
 
     fun registerUser(userData: UserCreationDTO): Map<String, String> {
         val user = User(
@@ -74,7 +66,7 @@ class UserService {
             userData.email!!,
             userData.username!!
         )
-        userList[userData.username!!] = user
+        userRecords.addUser(user)
         emailList.add(userData.email!!)
         phoneNumberList.add(userData.phoneNumber!!)
         return mapOf(
@@ -89,14 +81,14 @@ class UserService {
     fun accountInformation(userName: String): Map<String, Any?> {
         val errorList = mutableListOf<String>()
 
-        if (checkIfUerExist(userName)) {
+        if (!userRecords.checkIfUserExists(userName)) {
             errorList.add(errors["USER_DOES_NOT_EXISTS"].toString())
         }
 
         if (errorList.size > 0) {
             return mapOf("error" to errorList)
         }
-        val user = userList[userName]!!
+        val user = userRecords.getUser(userName)!!
 
         return mapOf(
             "firstName" to user.firstName,
@@ -130,20 +122,20 @@ class UserService {
                 .uppercase() != "PERFORMANCE"
         ) {
             errorList.add(errors["INVALID_TYPE"].toString())
-        } else if (checkIfUerExist(userName)) {
+        } else if (!userRecords.checkIfUserExists(userName)) {
             errorList.add(errors["USER_DOES_NOT_EXISTS"].toString())
         }
 
         if (errorList.size > 0) {
             return mapOf("error" to errorList)
         }
-        return mapOf("message" to userList[userName]!!.addToInventory(inventoryData))
+        return mapOf("message" to userRecords.getUser(userName)!!.addToInventory(inventoryData))
     }
 
     fun addingMoney(walletData: AddWalletDTO, userName: String): Map<String, Any> {
         val errorList = mutableListOf<String>()
 
-        if (checkIfUerExist(userName)) {
+        if (!userRecords.checkIfUserExists(userName)) {
             errorList.add(errors["USER_DOES_NOT_EXISTS"].toString())
         }
 
@@ -151,6 +143,6 @@ class UserService {
             return mapOf("error" to errorList)
         }
 
-        return mapOf("message" to userList[userName]!!.addToWallet(walletData))
+        return mapOf("message" to userRecords.getUser(userName)!!.addToWallet(walletData))
     }
 }
