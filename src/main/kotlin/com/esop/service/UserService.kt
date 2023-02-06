@@ -15,42 +15,43 @@ class UserService {
         val phoneNumberList = mutableSetOf<String>()
         var userList = HashMap<String, User>()
 
-        fun orderCheckBeforePlace(order: Order): MutableList<String> {
-            val errorList = mutableListOf<String>()
-            if (!userList.containsKey(order.userName)) {
-                errorList.add("User doesn't exist.")
-                return errorList
+    }
+
+    fun orderCheckBeforePlace(order: Order): MutableList<String> {
+        val errorList = mutableListOf<String>()
+        if (!userList.containsKey(order.userName)) {
+            errorList.add("User doesn't exist.")
+            return errorList
+        }
+
+        val user = userList[order.userName]!!
+        val wallet = user.userWallet
+        val nonPerformanceInventory = user.userNonPerfInventory
+
+
+        if (order.type == "BUY") {
+            nonPerformanceInventory.assertInventoryWillNotOverflowOnAdding(order.quantity)
+
+            val response = user.userWallet.moveMoneyFromFreeToLockedState(order.price * order.quantity)
+            if (response != "SUCCESS") {
+                errorList.add(response)
             }
+        } else if (order.type == "SELL") {
+            wallet.assertWalletWillNotOverflowOnAdding(order.price * order.quantity)
 
-            val user = userList[order.userName]!!
-            val wallet = user.userWallet
-            val nonPerformanceInventory = user.userNonPerfInventory
-
-
-            if (order.type == "BUY") {
-                nonPerformanceInventory.assertInventoryWillNotOverflowOnAdding(order.quantity)
-
-                val response = user.userWallet.moveMoneyFromFreeToLockedState(order.price * order.quantity)
+            if (order.esopType == "PERFORMANCE") {
+                val response = user.userPerformanceInventory.moveESOPsFromFreeToLockedState(order.quantity)
                 if (response != "SUCCESS") {
                     errorList.add(response)
                 }
-            } else if (order.type == "SELL") {
-                wallet.assertWalletWillNotOverflowOnAdding(order.price * order.quantity)
-
-                if (order.esopType == "PERFORMANCE") {
-                    val response = user.userPerformanceInventory.moveESOPsFromFreeToLockedState(order.quantity)
-                    if (response != "SUCCESS") {
-                        errorList.add(response)
-                    }
-                } else if (order.esopType == "NON_PERFORMANCE") {
-                    val response = user.userNonPerfInventory.moveESOPsFromFreeToLockedState(order.quantity)
-                    if (response != "SUCCESS") {
-                        errorList.add(response)
-                    }
+            } else if (order.esopType == "NON_PERFORMANCE") {
+                val response = user.userNonPerfInventory.moveESOPsFromFreeToLockedState(order.quantity)
+                if (response != "SUCCESS") {
+                    errorList.add(response)
                 }
             }
-            return errorList
         }
+        return errorList
     }
 
     fun checkIfUerExist(value: String): Boolean {
@@ -89,7 +90,7 @@ class UserService {
     fun accountInformation(userName: String): Map<String, Any?> {
         val errorList = mutableListOf<String>()
 
-        if (!checkIfUerExist(userName)) {
+        if (checkIfUerExist(userName)) {
             errorList.add(errors["USER_DOES_NOT_EXISTS"].toString())
         }
 
