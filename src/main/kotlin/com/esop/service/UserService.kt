@@ -12,12 +12,6 @@ import jakarta.inject.Singleton
 @Singleton
 class UserService(private val userRecords: UserRecords) {
 
-    companion object {
-        val emailList = mutableSetOf<String>()
-        val phoneNumberList = mutableSetOf<String>()
-        var userList = HashMap<String, User>()
-    }
-
     fun orderCheckBeforePlace(order: Order): MutableList<String> {
         val errorList = mutableListOf<String>()
 
