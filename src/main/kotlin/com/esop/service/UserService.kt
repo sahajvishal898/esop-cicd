@@ -14,38 +14,37 @@ class UserService {
         val emailList = mutableSetOf<String>()
         val phoneNumberList = mutableSetOf<String>()
         var userList = HashMap<String, User>()
-
     }
 
     fun orderCheckBeforePlace(order: Order): MutableList<String> {
         val errorList = mutableListOf<String>()
-        if (!userList.containsKey(order.userName)) {
+        if (!userList.containsKey(order.getUserName())) {
             errorList.add("User doesn't exist.")
             return errorList
         }
 
-        val user = userList[order.userName]!!
+        val user = userList[order.getUserName()]!!
         val wallet = user.userWallet
         val nonPerformanceInventory = user.userNonPerfInventory
 
 
-        if (order.type == "BUY") {
-            nonPerformanceInventory.assertInventoryWillNotOverflowOnAdding(order.quantity)
+        if (order.getType() == "BUY") {
+            nonPerformanceInventory.assertInventoryWillNotOverflowOnAdding(order.getQuantity())
 
-            val response = user.userWallet.moveMoneyFromFreeToLockedState(order.price * order.quantity)
+            val response = user.userWallet.moveMoneyFromFreeToLockedState(order.getPrice() * order.getQuantity())
             if (response != "SUCCESS") {
                 errorList.add(response)
             }
-        } else if (order.type == "SELL") {
-            wallet.assertWalletWillNotOverflowOnAdding(order.price * order.quantity)
+        } else if (order.getType() == "SELL") {
+            wallet.assertWalletWillNotOverflowOnAdding(order.getPrice() * order.getQuantity())
 
             if (order.esopType == "PERFORMANCE") {
-                val response = user.userPerformanceInventory.moveESOPsFromFreeToLockedState(order.quantity)
+                val response = user.userNonPerfInventory.moveESOPsFromFreeToLockedState(order.getQuantity())
                 if (response != "SUCCESS") {
                     errorList.add(response)
                 }
             } else if (order.esopType == "NON_PERFORMANCE") {
-                val response = user.userNonPerfInventory.moveESOPsFromFreeToLockedState(order.quantity)
+                val response = user.userPerformanceInventory.moveESOPsFromFreeToLockedState(order.getQuantity())
                 if (response != "SUCCESS") {
                     errorList.add(response)
                 }
@@ -67,7 +66,7 @@ class UserService {
     }
 
 
-    fun registerUser(userData: UserCreationDTO): Map<String, Any> {
+    fun registerUser(userData: UserCreationDTO): Map<String, String> {
         val user = User(
             userData.firstName!!.trim(),
             userData.lastName!!.trim(),

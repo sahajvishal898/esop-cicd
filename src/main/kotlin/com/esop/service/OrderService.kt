@@ -30,7 +30,7 @@ class OrderService {
             buyerOrder: Order
         ) {
             // Deduct money of quantity taken from buyer
-            val amountToBeDeductedFromLockedState = sellerOrder.price * (prevQuantity - remainingQuantity)
+            val amountToBeDeductedFromLockedState = sellerOrder.getPrice() * (prevQuantity - remainingQuantity)
             UserService.userList[userName]!!.userWallet.removeMoneyFromLockedState(amountToBeDeductedFromLockedState)
 
             // Add money of quantity taken from seller
@@ -40,17 +40,17 @@ class OrderService {
                 addPlatformFee(round(amountToBeDeductedFromLockedState * 0.02).toLong())
 
             }
-            UserService.userList[sellerOrder.userName]!!.userWallet.addMoneyToWallet(amountToBeAddedToSellersAccount)
+            UserService.userList[sellerOrder.getUserName()]!!.userWallet.addMoneyToWallet(amountToBeAddedToSellersAccount)
 
             // Deduct inventory of stock from sellers inventory based on its type
             if (sellerOrder.esopType == "PERFORMANCE") {
-                UserService.userList[sellerOrder.userName]!!.userPerformanceInventory.removeESOPsFromLockedState(
+                UserService.userList[sellerOrder.getUserName()]!!.userPerformanceInventory.removeESOPsFromLockedState(
                     prevQuantity - remainingQuantity
                 )
             }
 
             if (sellerOrder.esopType == "NON_PERFORMANCE") {
-                UserService.userList[sellerOrder.userName]!!.userNonPerfInventory.removeESOPsFromLockedState(
+                UserService.userList[sellerOrder.getUserName()]!!.userNonPerfInventory.removeESOPsFromLockedState(
                     prevQuantity - remainingQuantity
                 )
             }
@@ -59,8 +59,8 @@ class OrderService {
             UserService.userList[userName]!!.userNonPerfInventory.addESOPsToInventory(prevQuantity - remainingQuantity)
 
             // Add buyers money back to free from locked
-            UserService.userList[userName]!!.userWallet.addMoneyToWallet((buyerOrder.price - sellerOrder.price) * (prevQuantity - remainingQuantity))
-            UserService.userList[userName]!!.userWallet.removeMoneyFromLockedState((buyerOrder.price - sellerOrder.price) * (prevQuantity - remainingQuantity))
+            UserService.userList[userName]!!.userWallet.addMoneyToWallet((buyerOrder.getPrice() - sellerOrder.getPrice()) * (prevQuantity - remainingQuantity))
+            UserService.userList[userName]!!.userWallet.removeMoneyFromLockedState((buyerOrder.getPrice() - sellerOrder.getPrice()) * (prevQuantity - remainingQuantity))
         }
 
         private fun updateOrderDetailsForSell(
@@ -81,13 +81,13 @@ class OrderService {
             }
 
             // Add inventory to buyers stock
-            UserService.userList[buyerOrder.userName]!!.userNonPerfInventory.addESOPsToInventory(prevQuantity - remainingQuantity)
+            UserService.userList[buyerOrder.getUserName()]!!.userNonPerfInventory.addESOPsToInventory(prevQuantity - remainingQuantity)
 
             // Deduct money from buyers wallet
-            UserService.userList[buyerOrder.userName]!!.userWallet.removeMoneyFromLockedState((sellerOrder.price * (prevQuantity - remainingQuantity)))
+            UserService.userList[buyerOrder.getUserName()]!!.userWallet.removeMoneyFromLockedState((sellerOrder.getPrice() * (prevQuantity - remainingQuantity)))
 
             // Add money to sellers wallet
-            var totOrderPrice = sellerOrder.price * (prevQuantity - remainingQuantity)
+            var totOrderPrice = sellerOrder.getPrice() * (prevQuantity - remainingQuantity)
             if (sellerOrder.esopType == "NON_PERFORMANCE") {
                 totOrderPrice -= round(totOrderPrice * 0.02).toLong()
                 addPlatformFee(round(totOrderPrice * 0.02).toLong())
@@ -95,8 +95,8 @@ class OrderService {
             UserService.userList[userName]!!.userWallet.addMoneyToWallet(totOrderPrice)
 
             // Add buyers luck back to free from locked
-            UserService.userList[buyerOrder.userName]!!.userWallet.addMoneyToWallet((buyerOrder.price - sellerOrder.price) * (prevQuantity - remainingQuantity))
-            UserService.userList[buyerOrder.userName]!!.userWallet.removeMoneyFromLockedState((buyerOrder.price - sellerOrder.price) * (prevQuantity - remainingQuantity))
+            UserService.userList[buyerOrder.getUserName()]!!.userWallet.addMoneyToWallet((buyerOrder.getPrice() - sellerOrder.getPrice()) * (prevQuantity - remainingQuantity))
+            UserService.userList[buyerOrder.getUserName()]!!.userWallet.removeMoneyFromLockedState((buyerOrder.getPrice() - sellerOrder.getPrice()) * (prevQuantity - remainingQuantity))
 
         }
 
@@ -113,12 +113,12 @@ class OrderService {
                         return 1
                     }
 
-                    if (o1.price == o2.price) {
+                    if (o1.getPrice() == o2.getPrice()) {
                         if (o1.timeStamp < o2.timeStamp)
                             return -1
                         return 1
                     }
-                    if (o1.price < o2.price)
+                    if (o1.getPrice() < o2.getPrice())
                         return -1
                     return 1
                 }
@@ -132,9 +132,9 @@ class OrderService {
             }
             order.orderID = generateOrderId()
             order.inventoryPriority = inventoryPriority
-            order.remainingQuantity = order.quantity
+            order.remainingQuantity = order.getQuantity()
 
-            if (order.type == "BUY") {
+            if (order.getType() == "BUY") {
                 buyOrders.add(order)
                 val sortedSellOrders = sortAscending()
 
@@ -143,23 +143,23 @@ class OrderService {
                     if (order.remainingQuantity == 0L) {
                         break
                     }
-                    if ((order.price >= bestSellOrder.price) && (bestSellOrder.remainingQuantity > 0)) {
+                    if ((order.getPrice() >= bestSellOrder.getPrice()) && (bestSellOrder.remainingQuantity > 0)) {
                         val prevQuantity = order.remainingQuantity
                         if (order.remainingQuantity < bestSellOrder.remainingQuantity) {
 
                             val buyOrderLog = OrderFilledLog(
                                 order.remainingQuantity,
-                                bestSellOrder.price,
+                                bestSellOrder.getPrice(),
                                 null,
-                                bestSellOrder.userName,
+                                bestSellOrder.getUserName(),
                                 null
                             )
                             val sellOrderLog = OrderFilledLog(
                                 order.remainingQuantity,
-                                bestSellOrder.price,
+                                bestSellOrder.getPrice(),
                                 bestSellOrder.esopType,
                                 null,
-                                order.userName
+                                order.getUserName()
                             )
 
                             bestSellOrder.remainingQuantity = bestSellOrder.remainingQuantity - order.remainingQuantity
@@ -172,7 +172,7 @@ class OrderService {
                             buyOrders.remove(order)
 
                             updateOrderDetailsForBuy(
-                                order.userName,
+                                order.getUserName(),
                                 prevQuantity,
                                 order.remainingQuantity,
                                 bestSellOrder,
@@ -183,14 +183,14 @@ class OrderService {
 
                             val buyOrderLog = OrderFilledLog(
                                 bestSellOrder.remainingQuantity,
-                                order.price,
+                                order.getPrice(),
                                 null,
-                                bestSellOrder.userName,
+                                bestSellOrder.getUserName(),
                                 null
                             )
                             val sellOrderLog = OrderFilledLog(
                                 bestSellOrder.remainingQuantity,
-                                order.price,
+                                order.getPrice(),
                                 bestSellOrder.esopType,
                                 null
                             )
@@ -205,7 +205,7 @@ class OrderService {
                             sellOrders.remove(bestSellOrder)
 
                             updateOrderDetailsForBuy(
-                                order.userName,
+                                order.getUserName(),
                                 prevQuantity,
                                 order.remainingQuantity,
                                 bestSellOrder,
@@ -214,15 +214,15 @@ class OrderService {
                         } else {
                             val buyOrderLog = OrderFilledLog(
                                 bestSellOrder.remainingQuantity,
-                                bestSellOrder.price,
+                                bestSellOrder.getPrice(),
                                 null,
-                                bestSellOrder.userName
+                                bestSellOrder.getUserName()
                             )
                             val sellOrderLog = OrderFilledLog(
                                 order.remainingQuantity,
-                                bestSellOrder.price,
+                                bestSellOrder.getPrice(),
                                 bestSellOrder.esopType,
-                                order.userName,
+                                order.getUserName(),
                                 null
                             )
 
@@ -237,7 +237,7 @@ class OrderService {
                             buyOrders.remove(order)
 
                             updateOrderDetailsForBuy(
-                                order.userName,
+                                order.getUserName(),
                                 prevQuantity,
                                 order.remainingQuantity,
                                 bestSellOrder,
@@ -251,24 +251,24 @@ class OrderService {
             } else {
                 sellOrders.add(order)
                 val sortedBuyOrders =
-                    buyOrders.sortedWith(compareByDescending<Order> { it.price }.thenBy { it.timeStamp })
+                    buyOrders.sortedWith(compareByDescending<Order> { it.getPrice() }.thenBy { it.timeStamp })
 
                 for (bestBuyOrder in sortedBuyOrders) {
                     if (order.remainingQuantity == 0L) {
                         break
                     }
-                    if ((order.price <= bestBuyOrder.price) && (bestBuyOrder.remainingQuantity > 0)) {
+                    if ((order.getPrice() <= bestBuyOrder.getPrice()) && (bestBuyOrder.remainingQuantity > 0)) {
                         val prevQuantity = order.remainingQuantity
                         if (order.remainingQuantity < bestBuyOrder.remainingQuantity) {
 
                             val buyOrderLog =
-                                OrderFilledLog(order.remainingQuantity, bestBuyOrder.price, null, order.userName, null)
+                                OrderFilledLog(order.remainingQuantity, bestBuyOrder.getPrice(), null, order.getUserName(), null)
                             val sellOrderLog = OrderFilledLog(
                                 order.remainingQuantity,
-                                bestBuyOrder.price,
+                                bestBuyOrder.getPrice(),
                                 order.esopType,
                                 null,
-                                bestBuyOrder.userName
+                                bestBuyOrder.getUserName()
                             )
 
                             bestBuyOrder.remainingQuantity = bestBuyOrder.remainingQuantity - order.remainingQuantity
@@ -281,7 +281,7 @@ class OrderService {
                             sellOrders.remove(order)
 
                             updateOrderDetailsForSell(
-                                order.userName,
+                                order.getUserName(),
                                 prevQuantity,
                                 order.remainingQuantity,
                                 bestBuyOrder,
@@ -291,13 +291,13 @@ class OrderService {
                         } else if (order.remainingQuantity > bestBuyOrder.remainingQuantity) {
 
                             val buyOrderLog =
-                                OrderFilledLog(bestBuyOrder.remainingQuantity, order.price, null, order.userName, null)
+                                OrderFilledLog(bestBuyOrder.remainingQuantity, order.getPrice(), null, order.getUserName(), null)
                             val sellOrderLog = OrderFilledLog(
                                 bestBuyOrder.remainingQuantity,
-                                order.price,
+                                order.getPrice(),
                                 order.esopType,
                                 null,
-                                bestBuyOrder.userName
+                                bestBuyOrder.getUserName()
                             )
 
 
@@ -311,7 +311,7 @@ class OrderService {
                             buyOrders.remove(bestBuyOrder)
 
                             updateOrderDetailsForSell(
-                                order.userName,
+                                order.getUserName(),
                                 prevQuantity,
                                 order.remainingQuantity,
                                 bestBuyOrder,
@@ -319,13 +319,13 @@ class OrderService {
                             )
                         } else {
                             val buyOrderLog =
-                                OrderFilledLog(bestBuyOrder.remainingQuantity, order.price, null, order.userName, null)
+                                OrderFilledLog(bestBuyOrder.remainingQuantity, order.getPrice(), null, order.getUserName(), null)
                             val sellOrderLog = OrderFilledLog(
                                 order.remainingQuantity,
-                                order.price,
+                                order.getPrice(),
                                 order.esopType,
                                 null,
-                                bestBuyOrder.userName
+                                bestBuyOrder.getUserName()
                             )
 
                             bestBuyOrder.remainingQuantity = 0
@@ -339,7 +339,7 @@ class OrderService {
                             sellOrders.remove(order)
 
                             updateOrderDetailsForSell(
-                                order.userName,
+                                order.getUserName(),
                                 prevQuantity,
                                 order.remainingQuantity,
                                 bestBuyOrder,
@@ -351,7 +351,7 @@ class OrderService {
                 }
             }
 
-            UserService.userList[order.userName]?.orderList?.add(order)
+            UserService.userList[order.getUserName()]?.orderList?.add(order)
 
             return mapOf("orderId" to order.orderID)
         }
@@ -369,9 +369,9 @@ class OrderService {
                 orderHistory.add(
                     History(
                         orders.orderID,
-                        orders.quantity,
-                        orders.type,
-                        orders.price,
+                        orders.getQuantity(),
+                        orders.getType(),
+                        orders.getPrice(),
                         orders.orderStatus,
                         orders.orderFilledLogs
                     )
