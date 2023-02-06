@@ -1,7 +1,9 @@
 package com.esop.service
 
 import com.esop.InventoryLimitExceededException
+import com.esop.WalletLimitExceededException
 import com.esop.constant.MAX_INVENTORY_CAPACITY
+import com.esop.constant.MAX_WALLET_CAPACITY
 import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
 import com.esop.dto.UserCreationDTO
@@ -106,4 +108,91 @@ class UserServiceTest {
             UserService.orderCheckBeforePlace(order)
         }
     }
+
+    @Test
+    fun `it should return empty error list when there is sufficient free Non Performance ESOPs in the Inventory`() {
+        val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
+        userService.registerUser(user)
+        userService.addingInventory(AddInventoryDTO(quantity = 10L), userName = "sankar06")
+        val order = Order(
+            quantity = 10, type = "SELL", price = 10, userName = "sankar06"
+        )
+        order.esopType = "NON_PERFORMANCE"
+
+        val actualErrors = UserService.orderCheckBeforePlace(order)
+
+        val expectedErrors = emptyList<String>()
+        assertEquals(expectedErrors, actualErrors, "error list returned must be empty")
+    }
+
+    @Test
+    fun `it should return error list with error when there is insufficient free Non Performance ESOPs in Inventory`() {
+        val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
+        userService.registerUser(user)
+        userService.addingInventory(AddInventoryDTO(quantity = 10L), userName = "sankar06")
+        val order = Order(
+            quantity = 29, type = "SELL", price = 10, userName = "sankar06"
+        )
+        order.esopType = "NON_PERFORMANCE"
+
+        val actualErrors = UserService.orderCheckBeforePlace(order)
+
+        val expectedErrors = listOf("Insufficient non_performance inventory.")
+        assertEquals(
+            expectedErrors,
+            actualErrors,
+            "error list should contain \"Insufficient non_performance inventory.\""
+        )
+    }
+
+    @Test
+    fun `it should return error when the seller wallet overflows`() {
+        val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
+        userService.registerUser(user)
+        val order = Order(
+            quantity = 10, type = "SELL", price = 10, userName = "sankar06"
+        )
+        order.esopType = "NON_PERFORMANCE"
+        userService.addingMoney(AddWalletDTO(MAX_WALLET_CAPACITY), userName = "sankar06")
+
+        assertThrows<WalletLimitExceededException> {
+            UserService.orderCheckBeforePlace(order)
+        }
+    }
+
+    @Test
+    fun `it should return empty error list when there is sufficient free Performance ESOPs in the Inventory`() {
+        val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
+        userService.registerUser(user)
+        userService.addingInventory(AddInventoryDTO(quantity = 10L, esopType = "PERFORMANCE"), userName = "sankar06")
+        val order = Order(
+            quantity = 10, type = "SELL", price = 10, userName = "sankar06"
+        )
+        order.esopType = "PERFORMANCE"
+
+        val actualErrors = UserService.orderCheckBeforePlace(order)
+
+        val expectedErrors = emptyList<String>()
+        assertEquals(expectedErrors, actualErrors, "error list returned must be empty")
+    }
+
+    @Test
+    fun `it should return error list with error when there is insufficient free Performance ESOPs in Inventory`() {
+        val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
+        userService.registerUser(user)
+        val order = Order(
+            quantity = 29, type = "SELL", price = 10, userName = "sankar06"
+        )
+        order.esopType = "PERFORMANCE"
+
+        val actualErrors = UserService.orderCheckBeforePlace(order)
+
+        val expectedErrors = listOf("Insufficient performance inventory.")
+        assertEquals(
+            expectedErrors,
+            actualErrors,
+            "error list should contain \"Insufficient performance inventory.\""
+        )
+    }
+
 }
