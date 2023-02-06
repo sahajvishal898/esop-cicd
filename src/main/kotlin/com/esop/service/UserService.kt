@@ -39,12 +39,12 @@ class UserService {
             wallet.assertWalletWillNotOverflowOnAdding(order.getPrice() * order.getQuantity())
 
             if (order.esopType == "PERFORMANCE") {
-                val response = user.userNonPerfInventory.moveESOPsFromFreeToLockedState(order.getQuantity())
+                val response = user.lockPerformanceInventory(order.getQuantity())
                 if (response != "SUCCESS") {
                     errorList.add(response)
                 }
             } else if (order.esopType == "NON_PERFORMANCE") {
-                val response = user.userPerformanceInventory.moveESOPsFromFreeToLockedState(order.getQuantity())
+                val response = user.lockNonPerformanceInventory(order.getQuantity())
                 if (response != "SUCCESS") {
                     errorList.add(response)
                 }

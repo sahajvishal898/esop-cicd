@@ -31,4 +31,11 @@ class User(
         return "None"
     }
 
+    fun lockPerformanceInventory(quantity: Long) : String{
+        return userPerformanceInventory.moveESOPsFromFreeToLockedState(quantity)
+    }
+
+    fun lockNonPerformanceInventory(quantity: Long) : String{
+        return userNonPerfInventory.moveESOPsFromFreeToLockedState(quantity)
+    }
 }
