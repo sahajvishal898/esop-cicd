@@ -11,6 +11,7 @@ import com.esop.schema.Order
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
@@ -19,6 +20,11 @@ class UserServiceTest {
 
     @Inject
     private lateinit var userService: UserService
+
+    @BeforeEach
+    fun `should clear the users`() {
+        UserService.userList.clear()
+    }
 
     @Test
     fun `should register a valid user`() {
@@ -45,7 +51,7 @@ class UserServiceTest {
         )
         val expectedErrors = listOf("User doesn't exist.")
 
-        val errors = UserService.orderCheckBeforePlace(order)
+        val errors = userService.orderCheckBeforePlace(order)
 
         assertEquals(expectedErrors, errors, "user non existent error should be present in the errors list")
     }
@@ -64,6 +70,19 @@ class UserServiceTest {
         assertEquals(expectedFreeMoney, actualFreeMoney)
     }
 
+    @Test
+    fun `should add ESOPS to inventory`() {
+        val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "Sankar")
+        userService.registerUser(user)
+        val inventoryDetails = AddInventoryDTO(quantity = 1000L, esopType = "NON_PERFORMANCE")
+        val expectedFreeInventory: Long = 1000
+        val expectedUsername = "Sankar"
+
+        userService.addingInventory(inventoryDetails, "Sankar")
+
+        val actualFreeMoney = UserService.userList[expectedUsername]!!.userNonPerfInventory.getFreeInventory()
+        assertEquals(expectedFreeInventory, actualFreeMoney)
+    }
 
     @Test
     fun `should check if return empty list if there is sufficient free amount is in wallet to place BUY order`() {
@@ -74,7 +93,7 @@ class UserServiceTest {
             quantity = 10, type = "BUY", price = 10, userName = "sankar06"
         )
 
-        val actualErrors = UserService.orderCheckBeforePlace(order)
+        val actualErrors = userService.orderCheckBeforePlace(order)
 
         val expectedErrors = emptyList<String>()
         assertEquals(expectedErrors, actualErrors, "error list returned must be empty")
@@ -89,7 +108,7 @@ class UserServiceTest {
         )
         userService.addingMoney(AddWalletDTO(price = 99L), userName = "sankar06")
 
-        val actualErrors = UserService.orderCheckBeforePlace(order)
+        val actualErrors = userService.orderCheckBeforePlace(order)
 
         val expectedErrors = listOf("Insufficient funds")
         assertEquals(expectedErrors, actualErrors)
@@ -105,7 +124,7 @@ class UserServiceTest {
         userService.addingInventory(AddInventoryDTO(MAX_INVENTORY_CAPACITY, "NON_PERFORMANCE"), userName = "sankar06")
 
         assertThrows<InventoryLimitExceededException> {
-            UserService.orderCheckBeforePlace(order)
+            userService.orderCheckBeforePlace(order)
         }
     }
 
@@ -119,7 +138,7 @@ class UserServiceTest {
         )
         order.esopType = "NON_PERFORMANCE"
 
-        val actualErrors = UserService.orderCheckBeforePlace(order)
+        val actualErrors = userService.orderCheckBeforePlace(order)
 
         val expectedErrors = emptyList<String>()
         assertEquals(expectedErrors, actualErrors, "error list returned must be empty")
@@ -135,7 +154,7 @@ class UserServiceTest {
         )
         order.esopType = "NON_PERFORMANCE"
 
-        val actualErrors = UserService.orderCheckBeforePlace(order)
+        val actualErrors = userService.orderCheckBeforePlace(order)
 
         val expectedErrors = listOf("Insufficient non_performance inventory.")
         assertEquals(
@@ -156,7 +175,7 @@ class UserServiceTest {
         userService.addingMoney(AddWalletDTO(MAX_WALLET_CAPACITY), userName = "sankar06")
 
         assertThrows<WalletLimitExceededException> {
-            UserService.orderCheckBeforePlace(order)
+            userService.orderCheckBeforePlace(order)
         }
     }
 
@@ -170,7 +189,7 @@ class UserServiceTest {
         )
         order.esopType = "PERFORMANCE"
 
-        val actualErrors = UserService.orderCheckBeforePlace(order)
+        val actualErrors = userService.orderCheckBeforePlace(order)
 
         val expectedErrors = emptyList<String>()
         assertEquals(expectedErrors, actualErrors, "error list returned must be empty")
@@ -185,7 +204,7 @@ class UserServiceTest {
         )
         order.esopType = "PERFORMANCE"
 
-        val actualErrors = UserService.orderCheckBeforePlace(order)
+        val actualErrors = userService.orderCheckBeforePlace(order)
 
         val expectedErrors = listOf("Insufficient performance inventory.")
         assertEquals(
