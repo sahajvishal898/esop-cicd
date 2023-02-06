@@ -1,6 +1,7 @@
 package com.esop.service
 
 import com.esop.dto.UserCreationDTO
+import com.esop.schema.Order
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions.*
@@ -28,5 +29,20 @@ class UserServiceTest{
 
         //Assert
         assertEquals(response,expected)
+    }
+
+    @Test
+    fun `should check user doesn't exist before placing Order`(){
+        val order = Order(
+            quantity = 10,
+            type = "BUY",
+            price = 10,
+            userName = "Sankar"
+        )
+        val expectedErrors = listOf("User doesn't exist.")
+
+        val errors = UserService.orderCheckBeforePlace(order)
+
+        assertEquals(expectedErrors, errors, "user non existent error should be present in the errors list")
     }
 }
