@@ -26,12 +26,12 @@ class UserService {
         val user = userList[order.getUserName()]!!
         val wallet = user.userWallet
         val nonPerformanceInventory = user.userNonPerfInventory
-
+        val totalPrice = order.getPrice() * order.getQuantity()
 
         if (order.getType() == "BUY") {
             nonPerformanceInventory.assertInventoryWillNotOverflowOnAdding(order.getQuantity())
 
-            val response = user.userWallet.moveMoneyFromFreeToLockedState(order.getPrice() * order.getQuantity())
+            val response = user.lockAmount(totalPrice)
             if (response != "SUCCESS") {
                 errorList.add(response)
             }
