@@ -38,4 +38,8 @@ class User(
     fun lockNonPerformanceInventory(quantity: Long) : String{
         return userNonPerfInventory.moveESOPsFromFreeToLockedState(quantity)
     }
+
+    fun lockAmount(price: Long): String {
+        return userWallet.moveMoneyFromFreeToLockedState(price)
+    }
 }
