@@ -94,7 +94,6 @@ class OrderService(private val userRecords: UserRecords) {
 
     fun placeOrder(order: Order): Map<String, Any> {
         order.orderID = generateOrderId()
-        order.remainingQuantity = order.getQuantity()
 
         if (order.getType() == "BUY") {
             executeBuyOrder(order)

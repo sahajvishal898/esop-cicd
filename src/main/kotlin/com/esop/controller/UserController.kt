@@ -98,11 +98,7 @@ class UserController {
         }
 
         val order = Order(body.quantity!!.toLong(), body.type.toString().uppercase(), body.price!!.toLong(), userName)
-        if (orderType == "SELL") {
-            order.esopType = esopType
-            if (esopType == "PERFORMANCE")
-                order.inventoryPriority = InventoryPriority.PERFORMANCE
-        }
+
         errorList = userService.orderCheckBeforePlace(order)
         if (errorList.size > 0) {
             return HttpResponse.badRequest(mapOf("errors" to errorList))
