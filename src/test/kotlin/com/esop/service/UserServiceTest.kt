@@ -7,24 +7,25 @@ import com.esop.constant.MAX_WALLET_CAPACITY
 import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
 import com.esop.dto.UserCreationDTO
+import com.esop.repository.UserRecords
 import com.esop.schema.Order
-import io.micronaut.test.extensions.junit5.annotation.MicronautTest
-import jakarta.inject.Inject
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
 
-@MicronautTest
 class UserServiceTest {
 
-    @Inject
     private lateinit var userService: UserService
 
+    private lateinit var userRecords: UserRecords
+
     @BeforeEach
-    fun `should clear the users`() {
-        UserService.userList.clear()
+    fun setup() {
+        userRecords = UserRecords()
+        userService = UserService(userRecords)
     }
+
 
     @Test
     fun `should register a valid user`() {
@@ -66,7 +67,7 @@ class UserServiceTest {
 
         userService.addingMoney(walletDetails, "Sankar")
 
-        val actualFreeMoney = UserService.userList[expectedUsername]!!.userWallet.getFreeMoney()
+        val actualFreeMoney = userRecords.getUser(expectedUsername)!!.userWallet.getFreeMoney()
         assertEquals(expectedFreeMoney, actualFreeMoney)
     }
 
@@ -80,7 +81,7 @@ class UserServiceTest {
 
         userService.addingInventory(inventoryDetails, "Sankar")
 
-        val actualFreeMoney = UserService.userList[expectedUsername]!!.userNonPerfInventory.getFreeInventory()
+        val actualFreeMoney = userRecords.getUser(expectedUsername)!!.userNonPerfInventory.getFreeInventory()
         assertEquals(expectedFreeInventory, actualFreeMoney)
     }
 
