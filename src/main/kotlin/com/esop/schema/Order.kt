@@ -7,12 +7,12 @@ class Order(
     private var userName: String
 ) {
     var timeStamp = System.currentTimeMillis()
-    var remainingQuantity: Long = 0
     var orderStatus: String = "PENDING" // COMPLETED, PARTIAL, PENDING
     var orderFilledLogs: MutableList<OrderFilledLog> = mutableListOf()
     var orderID: Long = -1
     var esopType = "NON_PERFORMANCE"
     var inventoryPriority = 2
+    var remainingQuantity = quantity
 
     fun getQuantity(): Long {
         return quantity
@@ -28,5 +28,22 @@ class Order(
 
     fun getUserName(): String {
         return userName
+    }
+
+
+    fun updateRemainingQuantity(quantityToBeUpdated: Long) {
+        remainingQuantity -= quantityToBeUpdated
+    }
+
+    fun updateStatus() {
+        if (remainingQuantity == 0L) {
+            orderStatus = "COMPLETED"
+        } else if (remainingQuantity != quantity) {
+            orderStatus = "PARTIAL"
+        }
+    }
+
+    fun addOrderFilledLogs(orderFilledLog: OrderFilledLog) {
+        orderFilledLogs.add(orderFilledLog)
     }
 }
