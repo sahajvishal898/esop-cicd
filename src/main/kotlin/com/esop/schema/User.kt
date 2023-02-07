@@ -31,15 +31,24 @@ class User(
         return "None"
     }
 
-    fun lockPerformanceInventory(quantity: Long) : String{
+    fun lockPerformanceInventory(quantity: Long): String {
         return userPerformanceInventory.moveESOPsFromFreeToLockedState(quantity)
     }
 
-    fun lockNonPerformanceInventory(quantity: Long) : String{
+    fun lockNonPerformanceInventory(quantity: Long): String {
         return userNonPerfInventory.moveESOPsFromFreeToLockedState(quantity)
     }
 
     fun lockAmount(price: Long): String {
         return userWallet.moveMoneyFromFreeToLockedState(price)
+    }
+    private fun getInventory(type: String): Inventory {
+        if (type == "PERFORMANCE") return userPerformanceInventory
+        return userNonPerfInventory
+    }
+
+    fun transferLockedESOPsTo(buyer: User, esopType: String, currentTradeQuantity: Long) {
+        this.getInventory(esopType).removeESOPsFromLockedState(currentTradeQuantity)
+        buyer.getInventory("NON_PERFORMANCE").addESOPsToInventory(currentTradeQuantity)
     }
 }
