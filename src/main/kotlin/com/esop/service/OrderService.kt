@@ -233,7 +233,7 @@ class OrderService(private val userRecords: UserRecords) {
 
         for (sellOrder in sortedSellOrders) {
             if ((buyOrder.getPrice() >= sellOrder.getPrice()) && (sellOrder.remainingQuantity > 0)) {
-                    var prevQuantity = buyOrder.remainingQuantity
+                    val prevQuantity = buyOrder.remainingQuantity
                     val orderExecutionPrice = sellOrder.getPrice()
                     val orderExecutionQuantity = min(buyOrder.remainingQuantity, sellOrder.remainingQuantity)
 
@@ -267,6 +267,12 @@ class OrderService(private val userRecords: UserRecords) {
                         sellOrder,
                         buyOrder
                     )
+                if (buyOrder.orderStatus == "COMPLETED") {
+                    buyOrders.remove(buyOrder)
+                }
+                if (sellOrder.orderStatus == "COMPLETED") {
+                    sellOrders.remove(sellOrder)
+                }
             }
         }
     }
