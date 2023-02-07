@@ -108,9 +108,6 @@ class OrderService(private val userRecords: UserRecords) {
 
 
             for (bestSellOrder in sortedSellOrders) {
-                if (order.remainingQuantity == 0L) {
-                    break
-                }
                 if ((order.getPrice() >= bestSellOrder.getPrice()) && (bestSellOrder.remainingQuantity > 0)) {
                     val prevQuantity = order.remainingQuantity
                     if (order.remainingQuantity < bestSellOrder.remainingQuantity) {
@@ -219,9 +216,6 @@ class OrderService(private val userRecords: UserRecords) {
                 buyOrders.sortedWith(compareByDescending<Order> { it.getPrice() }.thenBy { it.timeStamp })
 
             for (bestBuyOrder in sortedBuyOrders) {
-                if (order.remainingQuantity == 0L) {
-                    break
-                }
                 if ((order.getPrice() <= bestBuyOrder.getPrice()) && (bestBuyOrder.remainingQuantity > 0)) {
                     val prevQuantity = order.remainingQuantity
                     if (order.remainingQuantity < bestBuyOrder.remainingQuantity) {
