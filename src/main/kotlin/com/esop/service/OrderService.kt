@@ -29,13 +29,11 @@ class OrderService(private val userRecords: UserRecords) {
     }
 
     private fun updateOrderDetails(
-        orderQuantity: Long,
-        unfulfilledOrderQuantity: Long,
+        currentTradeQuantity: Long,
         sellerOrder: Order,
         buyerOrder: Order
     ) {
         // Deduct money of quantity taken from buyer
-        val currentTradeQuantity = orderQuantity - unfulfilledOrderQuantity
         val sellAmount = sellerOrder.getPrice() * (currentTradeQuantity)
         val buyer = userRecords.getUser(buyerOrder.getUserName())!!
         val seller = userRecords.getUser(sellerOrder.getUserName())!!
@@ -118,7 +116,7 @@ class OrderService(private val userRecords: UserRecords) {
 
         for (sellOrder in sortedSellOrders) {
             if ((buyOrder.getPrice() >= sellOrder.getPrice()) && (sellOrder.remainingQuantity > 0)) {
-                performOrderMatching(sellOrder,buyOrder)
+                performOrderMatching(sellOrder, buyOrder)
             }
         }
     }
@@ -136,8 +134,6 @@ class OrderService(private val userRecords: UserRecords) {
     }
 
     private fun performOrderMatching(sellOrder: Order, buyOrder: Order) {
-        val prevQuantity = sellOrder.remainingQuantity
-
         val orderExecutionPrice = sellOrder.getPrice()
         val orderExecutionQuantity = min(sellOrder.remainingQuantity, buyOrder.remainingQuantity)
 
@@ -167,8 +163,7 @@ class OrderService(private val userRecords: UserRecords) {
         sellOrder.orderFilledLogs.add(sellOrderLog)
 
         updateOrderDetails(
-            prevQuantity,
-            sellOrder.remainingQuantity,
+            orderExecutionQuantity,
             sellOrder,
             buyOrder
         )
