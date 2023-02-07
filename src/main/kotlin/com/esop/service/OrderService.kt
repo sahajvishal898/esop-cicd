@@ -40,7 +40,6 @@ class OrderService(private val userRecords: UserRecords) {
         if (sellerOrder.esopType == "NON_PERFORMANCE") {
             amountToBeAddedToSellersAccount -= round(amountToBeDeductedFromLockedState * 0.02).toLong()
             addPlatformFee(round(amountToBeDeductedFromLockedState * 0.02).toLong())
-
         }
         userRecords.getUser(sellerOrder.getUserName())!!.userWallet.addMoneyToWallet(amountToBeAddedToSellersAccount)
 
