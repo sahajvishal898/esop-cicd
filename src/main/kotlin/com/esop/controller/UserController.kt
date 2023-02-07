@@ -6,6 +6,7 @@ import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
 import com.esop.dto.CreateOrderDTO
 import com.esop.dto.UserCreationDTO
+import com.esop.schema.InventoryPriority
 import com.esop.schema.Order
 import com.esop.service.*
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -100,7 +101,7 @@ class UserController {
         if (orderType == "SELL") {
             order.esopType = esopType
             if (esopType == "PERFORMANCE")
-                order.inventoryPriority = 1
+                order.inventoryPriority = InventoryPriority.PERFORMANCE
         }
         errorList = userService.orderCheckBeforePlace(order)
         if (errorList.size > 0) {

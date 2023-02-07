@@ -72,9 +72,9 @@ class OrderService(private val userRecords: UserRecords) {
             override fun compare(o1: Order, o2: Order): Int {
 
                 if (o1.inventoryPriority != o2.inventoryPriority)
-                    return o1.inventoryPriority - o2.inventoryPriority
+                    return o1.inventoryPriority.priority - o2.inventoryPriority.priority
 
-                if (o1.inventoryPriority == 1) {
+                if (o1.inventoryPriority.priority == 1) {
                     if (o1.timeStamp < o2.timeStamp)
                         return -1
                     return 1
@@ -93,12 +93,7 @@ class OrderService(private val userRecords: UserRecords) {
     }
 
     fun placeOrder(order: Order): Map<String, Any> {
-        var inventoryPriority = 2
-        if (order.esopType == "PERFORMANCE") {
-            inventoryPriority -= 1
-        }
         order.orderID = generateOrderId()
-        order.inventoryPriority = inventoryPriority
         order.remainingQuantity = order.getQuantity()
 
         if (order.getType() == "BUY") {
