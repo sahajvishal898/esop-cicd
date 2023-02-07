@@ -132,30 +132,13 @@ class OrderService(private val userRecords: UserRecords) {
         val orderExecutionPrice = sellOrder.getPrice()
         val orderExecutionQuantity = min(sellOrder.remainingQuantity, buyOrder.remainingQuantity)
 
-        val buyOrderLog =
-            OrderFilledLog(
-                orderExecutionQuantity,
-                orderExecutionPrice,
-                null,
-                sellOrder.getUserName(),
-                null
-            )
-        val sellOrderLog = OrderFilledLog(
-            orderExecutionQuantity,
-            orderExecutionPrice,
-            sellOrder.esopType,
-            null,
-            buyOrder.getUserName()
-        )
-
         buyOrder.updateRemainingQuantity(orderExecutionQuantity)
         sellOrder.updateRemainingQuantity(orderExecutionQuantity)
 
         buyOrder.updateStatus()
         sellOrder.updateStatus()
 
-        buyOrder.orderFilledLogs.add(buyOrderLog)
-        sellOrder.orderFilledLogs.add(sellOrderLog)
+        createOrderFilledLogs(orderExecutionQuantity, orderExecutionPrice, sellOrder, buyOrder)
 
         updateOrderDetails(
             orderExecutionQuantity,
@@ -169,6 +152,31 @@ class OrderService(private val userRecords: UserRecords) {
         if (sellOrder.orderStatus == "COMPLETED") {
             sellOrders.remove(sellOrder)
         }
+    }
+
+    private fun createOrderFilledLogs(
+        orderExecutionQuantity: Long,
+        orderExecutionPrice: Long,
+        sellOrder: Order,
+        buyOrder: Order
+    ) {
+        val buyOrderLog = OrderFilledLog(
+            orderExecutionQuantity,
+            orderExecutionPrice,
+            null,
+            sellOrder.getUserName(),
+            null
+        )
+        val sellOrderLog = OrderFilledLog(
+            orderExecutionQuantity,
+            orderExecutionPrice,
+            sellOrder.esopType,
+            null,
+            buyOrder.getUserName()
+        )
+
+        buyOrder.addOrderFilledLogs(buyOrderLog)
+        sellOrder.addOrderFilledLogs(sellOrderLog)
     }
 
     fun orderHistory(userName: String): Any {
@@ -195,4 +203,3 @@ class OrderService(private val userRecords: UserRecords) {
         return orderHistory
     }
 }
-
