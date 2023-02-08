@@ -9,7 +9,6 @@ import com.esop.schema.User
 import jakarta.inject.Singleton
 import kotlin.math.min
 
-private const val TWO_PERCENT = 0.02
 
 @Singleton
 class OrderService(private val userRecords: UserRecords,
@@ -27,9 +26,9 @@ class OrderService(private val userRecords: UserRecords,
         val buyer = userRecords.getUser(buyerOrder.getUserName())!!
         val seller = userRecords.getUser(sellerOrder.getUserName())!!
 
-        updateWalletBalances(sellAmount, sellerOrder.esopType, buyer, seller)
+        updateWalletBalances(sellAmount, sellerOrder.getEsopType(), buyer, seller)
 
-        seller.transferLockedESOPsTo(buyer, sellerOrder.esopType, currentTradeQuantity)
+        seller.transferLockedESOPsTo(buyer, sellerOrder.getEsopType(), currentTradeQuantity)
 
         val amountToBeReleased = (buyerOrder.getPrice() - sellerOrder.getPrice()) * (currentTradeQuantity)
         buyer.userWallet.moveMoneyFromLockedToFree(amountToBeReleased)
@@ -49,7 +48,7 @@ class OrderService(private val userRecords: UserRecords,
     }
 
 
-    fun placeOrder(order: Order): Map<String, Long> {
+    fun placeOrder(order: Order): Long {
         order.orderID = orderRecords.generateOrderId()
 
         if (order.getType() == "BUY") {
@@ -58,7 +57,7 @@ class OrderService(private val userRecords: UserRecords,
             executeSellOrder(order)
         }
         userRecords.getUser(order.getUserName())?.orderList?.add(order)
-        return mapOf("orderId" to order.orderID)
+        return order.orderID
     }
 
     private fun executeBuyOrder(buyOrder: Order) {
@@ -126,7 +125,7 @@ class OrderService(private val userRecords: UserRecords,
         val sellOrderLog = OrderFilledLog(
             orderExecutionQuantity,
             orderExecutionPrice,
-            sellOrder.esopType,
+            sellOrder.getEsopType(),
             null,
             buyOrder.getUserName()
         )

@@ -2,6 +2,8 @@ package com.esop.controller
 
 
 import com.esop.HttpException
+import com.esop.InvalidPreOrderPlaceException
+import com.esop.UserDoesNotExistException
 import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
 import com.esop.dto.CreateOrderDTO
@@ -10,10 +12,7 @@ import com.esop.schema.Order
 import com.esop.service.*
 import com.fasterxml.jackson.core.JsonProcessingException
 import io.micronaut.core.convert.exceptions.ConversionErrorException
-import io.micronaut.http.HttpRequest
-import io.micronaut.http.HttpResponse
-import io.micronaut.http.HttpStatus
-import io.micronaut.http.MediaType
+import io.micronaut.http.*
 import io.micronaut.http.annotation.*
 import io.micronaut.validation.Validated
 import io.micronaut.web.router.exceptions.UnsatisfiedBodyRouteException
@@ -33,13 +32,13 @@ class UserController {
     lateinit var orderService: OrderService
 
     @Error(exception = HttpException::class)
-    fun onHttpException(exception: HttpException): HttpResponse<*> {
+    fun onHttpException(exception: HttpException): HttpResponse<Map<String, ArrayList<String?>>>? {
         return HttpResponse.status<Map<String, ArrayList<String>>>(exception.status)
             .body(mapOf("errors" to arrayListOf(exception.message)))
     }
 
     @Error(exception = JsonProcessingException::class)
-    fun onJSONProcessingExceptionError(ex: JsonProcessingException): HttpResponse<Map<String, ArrayList<String>>> {
+    fun onJSONProcessingException(ex: JsonProcessingException): HttpResponse<Map<String, ArrayList<String>>> {
         return HttpResponse.badRequest(mapOf("errors" to arrayListOf("Invalid JSON format")))
     }
 
@@ -47,28 +46,41 @@ class UserController {
     fun onUnsatisfiedBodyRouteException(
         request: HttpRequest<*>,
         ex: UnsatisfiedBodyRouteException
-    ): HttpResponse<Map<String, List<*>>> {
+    ): HttpResponse<Map<String, List<String?>>> {
         return HttpResponse.badRequest(mapOf("errors" to arrayListOf("Request body missing")))
     }
 
     @Error(status = HttpStatus.NOT_FOUND, global = true)
-    fun onRouteNotFound(): HttpResponse<Map<String, List<*>>> {
+    fun onRouteNotFoundException(): HttpResponse<Map<String, List<String?>>> {
         return HttpResponse.notFound(mapOf("errors" to arrayListOf("Route not found")))
     }
 
     @Error(exception = ConversionErrorException::class)
-    fun onConversionErrorException(ex: ConversionErrorException): HttpResponse<Map<String, List<*>>> {
+    fun onConversionErrorException(ex: ConversionErrorException): HttpResponse<Map<String, ArrayList<String?>>>? {
         return HttpResponse.badRequest(mapOf("errors" to arrayListOf(ex.message)))
     }
 
     @Error(exception = ConstraintViolationException::class)
-    fun onConstraintViolationException(ex: ConstraintViolationException): HttpResponse<Map<String, List<*>>> {
+    fun onConstraintViolationException(ex: ConstraintViolationException): HttpResponse<Map<String, List<String>>> {
         return HttpResponse.badRequest(mapOf("errors" to ex.constraintViolations.map { it.message }))
     }
 
     @Error(exception = RuntimeException::class)
-    fun onRuntimeError(ex: RuntimeException): HttpResponse<Map<String, List<*>>> {
+    fun onRuntimeException(ex: RuntimeException): HttpResponse<Map<String, ArrayList<String?>>>? {
         return HttpResponse.serverError(mapOf("errors" to arrayListOf(ex.message)))
+    }
+
+    @Error()
+    fun userDoesNotExistException(exception: UserDoesNotExistException): HttpResponse<Map<String, List<String>>>? {
+        return HttpResponse.badRequest(mapOf("error" to listOf(exception.errorMessage)))
+    }
+    @Error()
+    fun invalidPreOrderPlaceException(exception: InvalidPreOrderPlaceException): HttpResponse<Map<String, List<String>>>? {
+        return HttpResponse.badRequest(mapOf("error" to exception.errorList))
+    }
+    @Error(global = true)
+    fun globalError(e: Throwable): Map<String,List<String?>> {
+        return mapOf("error" to listOf(e.message))
     }
 
 
@@ -83,39 +95,21 @@ class UserController {
 
     @Post(uri = "/{userName}/order", consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
     fun order(userName: String, @Body @Valid orderData: CreateOrderDTO): Any? {
-        var errorList = mutableListOf<String>()
-
-        val orderType: String = orderData.type.toString().uppercase()
         var esopType = "NON_PERFORMANCE"
+        orderData.esopType?.let{esopType = orderData.esopType.toString().uppercase()}
 
-        if (orderType == "SELL") {
-            esopType = orderData.esopType.toString().uppercase()
-            if (esopType != "PERFORMANCE" && esopType != "NON_PERFORMANCE") {
-                errorList.add("Invalid inventory type")
-                return HttpResponse.ok(mapOf("errors" to errorList))
-            }
-        }
+        val order = Order(orderData.quantity!!.toLong(), orderData.type.toString().uppercase(), orderData.price!!.toLong(), userName, esopType)
+        userService.orderCheckBeforePlace(order)
 
-        val order = Order(orderData.quantity!!.toLong(), orderData.type.toString().uppercase(), orderData.price!!.toLong(), userName)
-        order.esopType = esopType
-        errorList = userService.orderCheckBeforePlace(order)
-        if (errorList.size > 0) {
-            return HttpResponse.badRequest(mapOf("errors" to errorList))
-        }
-        val userOrderOrErrors = orderService.placeOrder(order)
-
-        if (userOrderOrErrors["orderId"] != null) {
-            return HttpResponse.ok(
-                mapOf(
-                    "orderId" to userOrderOrErrors["orderId"],
-                    "quantity" to orderData.quantity,
-                    "type" to orderData.type,
-                    "price" to orderData.price
-                )
+        val placedOrderId = orderService.placeOrder(order)
+        return HttpResponse.ok(
+            mapOf(
+                "orderId" to placedOrderId,
+                "quantity" to orderData.quantity,
+                "type" to orderData.type,
+                "price" to orderData.price
             )
-        } else {
-            return HttpResponse.badRequest(userOrderOrErrors)
-        }
+        )
     }
 
     @Get(uri = "/{userName}/accountInformation", produces = [MediaType.APPLICATION_JSON])

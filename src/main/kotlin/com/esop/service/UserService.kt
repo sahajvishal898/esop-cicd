@@ -1,5 +1,7 @@
 package com.esop.service
 
+import com.esop.InvalidPreOrderPlaceException
+import com.esop.UserDoesNotExistException
 import com.esop.constant.errors
 import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
@@ -12,12 +14,11 @@ import jakarta.inject.Singleton
 @Singleton
 class UserService(private val userRecords: UserRecords) {
 
-    fun orderCheckBeforePlace(order: Order): MutableList<String> {
+    fun orderCheckBeforePlace(order: Order){
         val errorList = mutableListOf<String>()
 
         if (!userRecords.checkIfUserExists(order.getUserName())) {
-            errorList.add("User doesn't exist.")
-            return errorList
+            throw UserDoesNotExistException("User doesn't exist.")
         }
 
         val user = userRecords.getUser(order.getUserName())!!
@@ -36,19 +37,21 @@ class UserService(private val userRecords: UserRecords) {
         } else if (order.getType() == "SELL") {
             wallet.assertWalletWillNotOverflowOnAdding(order.getPrice() * order.getQuantity())
 
-            if (order.esopType == "PERFORMANCE") {
+            if (order.getEsopType() == "PERFORMANCE") {
                 val response = user.lockPerformanceInventory(order.getQuantity())
                 if (response != "SUCCESS") {
                     errorList.add(response)
                 }
-            } else if (order.esopType == "NON_PERFORMANCE") {
+            } else if (order.getEsopType() == "NON_PERFORMANCE") {
                 val response = user.lockNonPerformanceInventory(order.getQuantity())
                 if (response != "SUCCESS") {
                     errorList.add(response)
                 }
             }
         }
-        return errorList
+        if(errorList.isNotEmpty()){
+            throw InvalidPreOrderPlaceException(errorList)
+        }
     }
 
 
