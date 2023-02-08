@@ -5,11 +5,6 @@ import com.esop.constant.MAX_INVENTORY_CAPACITY
 import java.util.*
 
 
-enum class ESOPType{
-    PERFORMANCE,
-    NON_PERFORMANCE
-}
-
 class Inventory(
     private var freeInventory: Long = 0L,
     private var lockedInventory: Long = 0L,
