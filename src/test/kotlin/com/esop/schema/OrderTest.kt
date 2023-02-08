@@ -41,8 +41,7 @@ class OrderTest{
             10,
             10,
             null,
-            "Sankar",
-            null
+            "Sankar"
         )
 
         buyOrder.addOrderFilledLogs(buyOrderLog)

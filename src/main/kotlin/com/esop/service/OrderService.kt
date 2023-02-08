@@ -119,14 +119,12 @@ class OrderService(private val userRecords: UserRecords,
             orderExecutionQuantity,
             orderExecutionPrice,
             null,
-            sellOrder.getUserName(),
-            null
+            sellOrder.getUserName()
         )
         val sellOrderLog = OrderFilledLog(
             orderExecutionQuantity,
             orderExecutionPrice,
             sellOrder.getEsopType(),
-            null,
             buyOrder.getUserName()
         )
 
