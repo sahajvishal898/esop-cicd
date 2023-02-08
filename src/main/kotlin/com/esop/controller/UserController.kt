@@ -6,7 +6,6 @@ import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
 import com.esop.dto.CreateOrderDTO
 import com.esop.dto.UserCreationDTO
-import com.esop.schema.InventoryPriority
 import com.esop.schema.Order
 import com.esop.service.*
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -98,7 +97,7 @@ class UserController {
         }
 
         val order = Order(body.quantity!!.toLong(), body.type.toString().uppercase(), body.price!!.toLong(), userName)
-
+        order.esopType = esopType
         errorList = userService.orderCheckBeforePlace(order)
         if (errorList.size > 0) {
             return HttpResponse.badRequest(mapOf("errors" to errorList))
