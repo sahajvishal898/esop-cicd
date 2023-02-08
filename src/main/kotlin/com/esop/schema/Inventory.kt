@@ -4,33 +4,35 @@ import com.esop.InventoryLimitExceededException
 import com.esop.constant.MAX_INVENTORY_CAPACITY
 import java.util.*
 
+
+enum class ESOPType{
+    PERFORMANCE,
+    NON_PERFORMANCE
+}
+
 class Inventory(
     private var freeInventory: Long = 0L,
     private var lockedInventory: Long = 0L,
-    private var type: String
+    private var type: ESOPType
 ) {
 
     private fun totalESOPQuantity(): Long {
         return freeInventory + lockedInventory
     }
 
-    private fun willInventoryOverflowOnAdding(quantity: Long): Boolean {
-        return quantity + totalESOPQuantity() > MAX_INVENTORY_CAPACITY
-    }
-
-    fun assertInventoryWillNotOverflowOnAdding(quantity: Long) {
-        if (willInventoryOverflowOnAdding(quantity)) throw InventoryLimitExceededException()
+    fun willInventoryOverflowOnAdding(quantity: Long) {
+        if (quantity + totalESOPQuantity() > MAX_INVENTORY_CAPACITY) throw InventoryLimitExceededException()
     }
 
     fun addESOPsToInventory(esopsToBeAdded: Long) {
-        assertInventoryWillNotOverflowOnAdding(esopsToBeAdded)
+        willInventoryOverflowOnAdding(esopsToBeAdded)
 
         this.freeInventory = this.freeInventory + esopsToBeAdded
     }
 
     fun moveESOPsFromFreeToLockedState(esopsToBeLocked: Long): String {
         if (this.freeInventory < esopsToBeLocked) {
-            return "Insufficient ${type.lowercase(Locale.getDefault())} inventory."
+            return "Insufficient $type inventory."
         }
         this.freeInventory = this.freeInventory - esopsToBeLocked
         this.lockedInventory = this.lockedInventory + esopsToBeLocked
