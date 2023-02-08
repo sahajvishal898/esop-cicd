@@ -2,11 +2,7 @@ package com.esop.schema
 
 import com.esop.schema.InventoryPriority.*
 
-enum class InventoryPriority(val priority: Int) {
-    NONE(0),
-    PERFORMANCE(1),
-    NON_PERFORMANCE(2)
-}
+
 
 class Order(
     private var quantity: Long,
