@@ -1,9 +1,8 @@
 package com.esop.repository
 
+import com.esop.schema.InventoryPriority
 import com.esop.schema.Order
-import com.esop.service.OrderService
 import jakarta.inject.Singleton
-import java.util.Optional
 
 @Singleton
 class OrderRecords {
@@ -32,43 +31,53 @@ class OrderRecords {
         sellOrders.remove(sellOrder)
     }
 
-    fun getBuyOrder(): Order? {
-        if(buyOrders.size > 0){
-            var sortedBuyOrders = buyOrders.sortedWith(compareByDescending<Order> { it.getPrice() }.thenBy { it.timeStamp })
-            return sortedBuyOrders[0]
+    fun getBestBuyOrder(price: Long): Order? {
+        var bestBuyOrder: Order? = null
+        if(buyOrders.isNotEmpty()){
+            val sortedBuyOrders = sortBuyOrders()
+            if(sortedBuyOrders[0].getPrice() >= price) bestBuyOrder = sortedBuyOrders[0]
         }
-        return null
+        return bestBuyOrder
     }
-    fun getSellOrder(): Order? {
-        if (sellOrders.size > 0) {
-            var sortedSellOrders = sortAscending()
-            return sortedSellOrders[0]
+    fun getBestSellOrder(price: Long): Order? {
+        var bestSellOrder : Order? = null
+        if (sellOrders.isNotEmpty()) {
+            val sortedSellOrders = sortSellOrders()
+            for(sellOrder in sortedSellOrders){
+                if(sellOrder.getPrice() <= price){
+                    bestSellOrder = sellOrder
+                    break
+                }
+            }
         }
-        return null
+        return bestSellOrder
     }
 
-    private fun sortAscending(): List<Order> {
+    private fun sortBuyOrders(): List<Order>{
+        return buyOrders.sortedWith(compareByDescending<Order> { it.getPrice() }.thenBy { it.timeStamp })
+    }
+
+    private fun sortSellOrders(): List<Order> {
         return sellOrders.sortedWith(object : Comparator<Order> {
-            override fun compare(o1: Order, o2: Order): Int {
-
-                if (o1.inventoryPriority != o2.inventoryPriority)
-                    return o1.inventoryPriority.priority - o2.inventoryPriority.priority
-
-                if (o1.inventoryPriority.priority == 1) {
-                    if (o1.timeStamp < o2.timeStamp)
-                        return -1
-                    return 1
+            override fun compare(firstOrder: Order, secondOrder: Order): Int {
+                val priorityComparison = firstOrder.inventoryPriority.compareTo(secondOrder.inventoryPriority)
+                if(priorityComparison != 0) return priorityComparison
+                when(firstOrder.inventoryPriority){
+                    InventoryPriority.NON_PERFORMANCE -> {
+                        val priceComparison = firstOrder.getPrice().compareTo(secondOrder.getPrice())
+                        if(priceComparison != 0) return priceComparison
+                        return firstOrder.timeStamp.compareTo(secondOrder.timeStamp)
+                    }
+                    InventoryPriority.PERFORMANCE -> return firstOrder.timeStamp.compareTo(secondOrder.timeStamp)
+                    else -> return 1
                 }
-
-                if (o1.getPrice() == o2.getPrice()) {
-                    if (o1.timeStamp < o2.timeStamp)
-                        return -1
-                    return 1
-                }
-                if (o1.getPrice() < o2.getPrice())
-                    return -1
-                return 1
             }
         })
+    }
+    fun getBuyOrderById(orderId: Long): Order?{
+        return buyOrders.filter{it.orderID == orderId}.elementAtOrNull(0)
+    }
+    fun getSellOrderById(orderId: Long): Order?{
+        return sellOrders.filter{it.orderID == orderId}.elementAtOrNull(0)
     }
 }
