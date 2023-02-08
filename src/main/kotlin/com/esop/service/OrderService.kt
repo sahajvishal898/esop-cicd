@@ -4,9 +4,7 @@ package com.esop.service
 import com.esop.constant.errors
 import com.esop.repository.OrderRecords
 import com.esop.repository.UserRecords
-import com.esop.schema.History
-import com.esop.schema.Order
-import com.esop.schema.OrderFilledLog
+import com.esop.schema.*
 import com.esop.schema.PlatformFee.Companion.addPlatformFee
 import com.esop.schema.User
 import jakarta.inject.Singleton
@@ -35,7 +33,6 @@ class OrderService(private val userRecords: UserRecords, private val orderRecord
 
         updateWalletBalances(sellAmount, platformFee, buyer, seller)
 
-
         seller.transferLockedESOPsTo(buyer, sellerOrder.esopType, currentTradeQuantity)
 
         val amountToBeReleased = (buyerOrder.getPrice() - sellerOrder.getPrice()) * (currentTradeQuantity)
@@ -55,6 +52,7 @@ class OrderService(private val userRecords: UserRecords, private val orderRecord
         buyer.userWallet.removeMoneyFromLockedState(sellAmount)
         seller.userWallet.addMoneyToWallet(adjustedSellAmount)
     }
+
 
     fun placeOrder(order: Order): Map<String, Long> {
         order.orderID = orderRecords.generateOrderId()
