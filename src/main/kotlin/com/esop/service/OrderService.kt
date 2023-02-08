@@ -8,7 +8,7 @@ import com.esop.schema.*
 import com.esop.schema.User
 import jakarta.inject.Singleton
 import kotlin.math.min
-
+import com.esop.schema.ESOPType.*
 
 @Singleton
 class OrderService(private val userRecords: UserRecords,
@@ -37,7 +37,7 @@ class OrderService(private val userRecords: UserRecords,
 
     private fun updateWalletBalances(
         sellAmount: Long,
-        esopType: String,
+        esopType: ESOPType,
         buyer: User,
         seller: User
     ) {

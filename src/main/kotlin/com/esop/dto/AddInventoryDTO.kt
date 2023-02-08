@@ -1,6 +1,7 @@
 package com.esop.dto
 
 import com.esop.constant.MAX_INVENTORY_CAPACITY
+import com.esop.schema.ESOPType
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.micronaut.core.annotation.Introspected
@@ -25,5 +26,5 @@ class AddInventoryDTO @JsonCreator constructor(
         regexp = "^((?i)NON_PERFORMANCE|(?i)PERFORMANCE)$",
         message = "esopType should be one of NON_PERFORMANCE or PERFORMANCE"
     )
-    var esopType: String? = "NON_PERFORMANCE"
+    var esopType: ESOPType? = ESOPType.NON_PERFORMANCE
 )

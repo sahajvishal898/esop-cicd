@@ -8,6 +8,7 @@ import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
 import com.esop.dto.CreateOrderDTO
 import com.esop.dto.UserCreationDTO
+import com.esop.schema.ESOPType
 import com.esop.schema.Order
 import com.esop.service.*
 import com.fasterxml.jackson.core.JsonProcessingException
@@ -19,6 +20,7 @@ import io.micronaut.web.router.exceptions.UnsatisfiedBodyRouteException
 import jakarta.inject.Inject
 import javax.validation.ConstraintViolationException
 import javax.validation.Valid
+import com.esop.schema.ESOPType.*
 
 
 @Validated
@@ -95,8 +97,8 @@ class UserController {
 
     @Post(uri = "/{userName}/order", consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
     fun order(userName: String, @Body @Valid orderData: CreateOrderDTO): Any? {
-        var esopType = "NON_PERFORMANCE"
-        orderData.esopType?.let{esopType = orderData.esopType.toString().uppercase()}
+        var esopType = ESOPType.NON_PERFORMANCE
+        orderData.esopType?.let{esopType = ESOPType.valueOf(orderData.esopType!!)}
 
         val order = Order(orderData.quantity!!.toLong(), orderData.type.toString().uppercase(), orderData.price!!.toLong(), userName, esopType)
         userService.orderCheckBeforePlace(order)

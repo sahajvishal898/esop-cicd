@@ -11,8 +11,8 @@ class User(
     var username: String
 ) {
     val userWallet: Wallet = Wallet()
-    val userNonPerfInventory: Inventory = Inventory(type = "NON_PERFORMANCE")
-    val userPerformanceInventory: Inventory = Inventory(type = "PERFORMANCE")
+    val userNonPerfInventory: Inventory = Inventory(type = ESOPType.NON_PERFORMANCE)
+    val userPerformanceInventory: Inventory = Inventory(type = ESOPType.PERFORMANCE)
     val orderList: ArrayList<Order> = ArrayList()
 
     fun addToWallet(walletData: AddWalletDTO): String {
@@ -42,13 +42,13 @@ class User(
     fun lockAmount(price: Long): String {
         return userWallet.moveMoneyFromFreeToLockedState(price)
     }
-    private fun getInventory(type: String): Inventory {
-        if (type == "PERFORMANCE") return userPerformanceInventory
+    private fun getInventory(type: ESOPType): Inventory {
+        if (type == ESOPType.PERFORMANCE) return userPerformanceInventory
         return userNonPerfInventory
     }
 
-    fun transferLockedESOPsTo(buyer: User, esopType: String, currentTradeQuantity: Long) {
+    fun transferLockedESOPsTo(buyer: User, esopType: ESOPType, currentTradeQuantity: Long) {
         this.getInventory(esopType).removeESOPsFromLockedState(currentTradeQuantity)
-        buyer.getInventory("NON_PERFORMANCE").addESOPsToInventory(currentTradeQuantity)
+        buyer.getInventory(ESOPType.NON_PERFORMANCE).addESOPsToInventory(currentTradeQuantity)
     }
 }
