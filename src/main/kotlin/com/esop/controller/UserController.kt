@@ -97,7 +97,7 @@ class UserController {
         }
 
         val order = Order(orderData.quantity!!.toLong(), orderData.type.toString().uppercase(), orderData.price!!.toLong(), userName)
-
+        order.esopType = esopType
         errorList = userService.orderCheckBeforePlace(order)
         if (errorList.size > 0) {
             return HttpResponse.badRequest(mapOf("errors" to errorList))

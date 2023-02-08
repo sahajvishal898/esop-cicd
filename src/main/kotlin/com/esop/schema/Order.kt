@@ -50,7 +50,7 @@ class Order(
     }
 
 
-    fun subtractFromRemainingQuantity(quantityToBeUpdated: Long) {
+    fun updateRemainingQuantity(quantityToBeUpdated: Long) {
         remainingQuantity -= quantityToBeUpdated
     }
 

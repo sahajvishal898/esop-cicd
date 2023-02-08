@@ -47,8 +47,8 @@ class User(
         return userNonPerfInventory
     }
 
-    fun transferLockedESOPsTo(buyer: User, esopTransferData : EsopTransferRequest) {
-        this.getInventory(esopTransferData.esopType).removeESOPsFromLockedState(esopTransferData.currentTradeQuantity)
-        buyer.getInventory("NON_PERFORMANCE").addESOPsToInventory(esopTransferData.currentTradeQuantity)
+    fun transferLockedESOPsTo(buyer: User, esopType: String, currentTradeQuantity: Long) {
+        this.getInventory(esopType).removeESOPsFromLockedState(currentTradeQuantity)
+        buyer.getInventory("NON_PERFORMANCE").addESOPsToInventory(currentTradeQuantity)
     }
 }
