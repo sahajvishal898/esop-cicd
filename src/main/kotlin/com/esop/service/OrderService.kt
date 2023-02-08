@@ -5,16 +5,17 @@ import com.esop.constant.errors
 import com.esop.repository.OrderRecords
 import com.esop.repository.UserRecords
 import com.esop.schema.*
-import com.esop.schema.PlatformFee.Companion.addPlatformFee
 import com.esop.schema.User
 import jakarta.inject.Singleton
 import kotlin.math.min
-import kotlin.math.round
 
 private const val TWO_PERCENT = 0.02
 
 @Singleton
-class OrderService(private val userRecords: UserRecords, private val orderRecords: OrderRecords) {
+class OrderService(private val userRecords: UserRecords,
+                   private val orderRecords: OrderRecords,
+                   private val platformFeeService: PlatformFeeService
+) {
 
     private fun updateOrderDetails(
         currentTradeQuantity: Long,
@@ -25,13 +26,8 @@ class OrderService(private val userRecords: UserRecords, private val orderRecord
         val sellAmount = sellerOrder.getPrice() * (currentTradeQuantity)
         val buyer = userRecords.getUser(buyerOrder.getUserName())!!
         val seller = userRecords.getUser(sellerOrder.getUserName())!!
-        var platformFee = 0L
 
-
-        if (sellerOrder.esopType == "NON_PERFORMANCE")
-            platformFee = round(sellAmount * TWO_PERCENT).toLong()
-
-        updateWalletBalances(sellAmount, platformFee, buyer, seller)
+        updateWalletBalances(sellAmount, sellerOrder.esopType, buyer, seller)
 
         seller.transferLockedESOPsTo(buyer, sellerOrder.esopType, currentTradeQuantity)
 
@@ -42,12 +38,11 @@ class OrderService(private val userRecords: UserRecords, private val orderRecord
 
     private fun updateWalletBalances(
         sellAmount: Long,
-        platformFee: Long,
+        esopType: String,
         buyer: User,
         seller: User
     ) {
-        val adjustedSellAmount = sellAmount - platformFee
-        addPlatformFee(platformFee)
+        val adjustedSellAmount = platformFeeService.deductPlatformFeeFrom(sellAmount, esopType)
 
         buyer.userWallet.removeMoneyFromLockedState(sellAmount)
         seller.userWallet.addMoneyToWallet(adjustedSellAmount)
