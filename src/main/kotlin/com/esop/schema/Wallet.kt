@@ -24,7 +24,6 @@ class Wallet {
     }
 
     fun moveMoneyFromFreeToLockedState(amountToBeLocked: Long) {
-        println(this.freeMoney)
         if (this.freeMoney < amountToBeLocked) {
             throw InsufficientFundsException()
         }
