@@ -16,7 +16,7 @@ class AddWalletDTO @JsonCreator constructor(
     @field:Digits(
         integer = 9,
         fraction = 0,
-        message = "amount can't exceed maximum wallet capacity of $MAX_WALLET_CAPACITY"
+        message = "Amount can't exceed maximum wallet capacity of $MAX_WALLET_CAPACITY"
     )
     @field:Min(1, message = "Amount can not be less than zero")
     var price: Long? = null,
