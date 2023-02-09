@@ -14,41 +14,31 @@ import com.esop.schema.ESOPType.*
 @Singleton
 class UserService(private val userRecords: UserRecords) {
 
-    fun orderCheckBeforePlace(order: Order){
+    private fun checkAndLockInventory(order: Order, user: User) {
+        when(order.getEsopType()){
+            PERFORMANCE -> user.lockPerformanceInventory(order.getQuantity())
+            NON_PERFORMANCE -> user.lockNonPerformanceInventory(order.getQuantity())
+        }
+    }
 
+    fun checkUserDetailsForOrder(order: Order){
         if (!userRecords.checkIfUserExists(order.getUserName())) {
             throw UserDoesNotExistException("User doesn't exist.")
         }
 
-        val errorList = mutableListOf<String>()
         val user = userRecords.getUser(order.getUserName())!!
         val wallet = user.userWallet
         val nonPerformanceInventory = user.userNonPerfInventory
 
-        if (order.getType() == "BUY") {
-            nonPerformanceInventory.willInventoryOverflowOnAdding(order.getQuantity())
-
-            val response = user.lockAmount(order.getPrice() * order.getQuantity())
-            if (response != "SUCCESS") {
-                errorList.add(response)
+        when(order.getType()){
+            "BUY"->{
+                nonPerformanceInventory.willInventoryOverflowOnAdding(order.getQuantity())
+                user.lockAmount(order.getPrice() * order.getQuantity())
             }
-        } else if (order.getType() == "SELL") {
-            wallet.assertWalletWillNotOverflowOnAdding(order.getPrice() * order.getQuantity())
-
-            if (order.getEsopType() == PERFORMANCE) {
-                val response = user.lockPerformanceInventory(order.getQuantity())
-                if (response != "SUCCESS") {
-                    errorList.add(response)
-                }
-            } else if (order.getEsopType() == NON_PERFORMANCE) {
-                val response = user.lockNonPerformanceInventory(order.getQuantity())
-                if (response != "SUCCESS") {
-                    errorList.add(response)
-                }
+            "SELL"->{
+                wallet.willWalletOverflowOnAdding(order.getPrice() * order.getQuantity())
+                checkAndLockInventory(order, user)
             }
-        }
-        if(errorList.isNotEmpty()){
-            throw InvalidPreOrderPlaceException(errorList)
         }
     }
 

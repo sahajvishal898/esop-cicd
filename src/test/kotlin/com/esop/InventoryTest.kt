@@ -6,6 +6,8 @@ import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
 import com.esop.schema.ESOPType.*
+import org.junit.jupiter.api.assertDoesNotThrow
+
 @MicronautTest
 class InventoryTest {
 
@@ -63,11 +65,10 @@ class InventoryTest {
             type = PERFORMANCE
         )
 
-        val message = inventory.moveESOPsFromFreeToLockedState(esopsToBeMoved)
-        val actualFreeInventory = inventory.getFreeInventory()
-        val actualLockedInventory = inventory.getLockedInventory()
+        assertDoesNotThrow { inventory.moveESOPsFromFreeToLockedState(esopsToBeMoved) }
 
-        Assertions.assertEquals("SUCCESS", message)
+        val actualLockedInventory = inventory.getLockedInventory()
+        val actualFreeInventory = inventory.getFreeInventory()
         Assertions.assertEquals(initialFreeInventory - esopsToBeMoved, actualFreeInventory)
         Assertions.assertEquals(initialLockedInventory + esopsToBeMoved, actualLockedInventory)
     }
