@@ -1,6 +1,6 @@
 package com.esop.schema
 
-import com.esop.schema.InventoryPriority.*
+import com.esop.schema.ESOPType.*
 
 
 
@@ -9,13 +9,13 @@ class Order(
     private var type: String,
     private var price: Long,
     private var userName: String,
-    private var esopType: ESOPType = ESOPType.NON_PERFORMANCE
+    private var esopType: ESOPType = NON_PERFORMANCE
 ) {
     var timeStamp = System.currentTimeMillis()
     var orderStatus: String = "PENDING" // COMPLETED, PARTIAL, PENDING
     var orderFilledLogs: MutableList<OrderFilledLog> = mutableListOf()
     var orderID: Long = -1
-    var inventoryPriority = NONE
+    var inventoryPriority = NON_PERFORMANCE
     var remainingQuantity = quantity
 
     init {
@@ -26,9 +26,9 @@ class Order(
         }
     }
 
-    private fun isTypeSellAndEsopTypePerformance() = type == "SELL" && esopType == ESOPType.PERFORMANCE
+    private fun isTypeSellAndEsopTypePerformance() = type == "SELL" && esopType == PERFORMANCE
 
-    private fun isTypeSellAndEsopTypeNonPerformance() = type == "SELL" && esopType == ESOPType.NON_PERFORMANCE
+    private fun isTypeSellAndEsopTypeNonPerformance() = type == "SELL" && esopType == NON_PERFORMANCE
     fun getQuantity(): Long {
         return quantity
     }
