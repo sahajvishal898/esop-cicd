@@ -15,20 +15,8 @@ class Order(
     var orderStatus: OrderStatus = PENDING // COMPLETED, PARTIAL, PENDING
     var orderFilledLogs: MutableList<OrderFilledLog> = mutableListOf()
     var orderID: Long = -1
-    var inventoryPriority = NON_PERFORMANCE
     var remainingQuantity = quantity
 
-    init {
-        if (isTypeSellAndEsopTypePerformance()) {
-            inventoryPriority = PERFORMANCE
-        } else if (isTypeSellAndEsopTypeNonPerformance()) {
-            inventoryPriority = NON_PERFORMANCE
-        }
-    }
-
-    private fun isTypeSellAndEsopTypePerformance() = type == SELL && esopType == PERFORMANCE
-
-    private fun isTypeSellAndEsopTypeNonPerformance() = type == SELL && esopType == NON_PERFORMANCE
     fun getQuantity(): Long {
         return quantity
     }

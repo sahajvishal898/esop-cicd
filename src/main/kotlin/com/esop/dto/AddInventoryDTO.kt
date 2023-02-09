@@ -17,7 +17,7 @@ class AddInventoryDTO @JsonCreator constructor(
     @field:Min(1, message = "Quantity has to be greater than zero")
     @field:Max(
         MAX_INVENTORY_CAPACITY,
-        message = "quantity can't exceed maximum inventory capacity of $MAX_INVENTORY_CAPACITY"
+        message = "Quantity can't exceed maximum inventory capacity of $MAX_INVENTORY_CAPACITY"
     )
     var quantity: Long? = null,
 
