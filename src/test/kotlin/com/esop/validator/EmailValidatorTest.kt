@@ -1,4 +1,4 @@
-package com.esop.validators
+package com.esop.validator
 
 import com.esop.repository.UserRecords
 import org.junit.jupiter.api.Assertions.assertFalse

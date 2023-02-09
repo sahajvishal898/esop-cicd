@@ -78,7 +78,7 @@ class UserServiceTest {
     fun `should add ESOPS to inventory`() {
         val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "Sankar")
         userService.registerUser(user)
-        val inventoryDetails = AddInventoryDTO(quantity = 1000L, esopType = NON_PERFORMANCE)
+        val inventoryDetails = AddInventoryDTO(quantity = 1000L, esopType = NON_PERFORMANCE.toString())
         val expectedFreeInventory: Long = 1000
         val expectedUsername = "Sankar"
 
@@ -119,7 +119,7 @@ class UserServiceTest {
         val order = Order(
             quantity = 10, type = BUY, price = 10, userName = "sankar06"
         )
-        userService.addingInventory(AddInventoryDTO(MAX_INVENTORY_CAPACITY, NON_PERFORMANCE), userName = "sankar06")
+        userService.addingInventory(AddInventoryDTO(MAX_INVENTORY_CAPACITY, NON_PERFORMANCE.toString()), userName = "sankar06")
 
         assertThrows<InventoryLimitExceededException> {
             userService.checkUserDetailsForOrder(order)
@@ -168,7 +168,7 @@ class UserServiceTest {
     fun `it should return empty error list when there is sufficient free Performance ESOPs in the Inventory`() {
         val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
         userService.registerUser(user)
-        userService.addingInventory(AddInventoryDTO(quantity = 10L, esopType = PERFORMANCE), userName = "sankar06")
+        userService.addingInventory(AddInventoryDTO(quantity = 10L, esopType = PERFORMANCE.toString()), userName = "sankar06")
         val order = Order(
             quantity = 10, type = SELL, price = 10, userName = "sankar06", PERFORMANCE
         )

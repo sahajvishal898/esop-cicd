@@ -16,6 +16,7 @@ class OrderService(
 ) {
 
     fun placeOrder(order: Order): Long {
+        userService.checkUserDetailsForOrder(order)
         if (order.getType() == BUY) {
             executeBuyOrder(order)
         } else {

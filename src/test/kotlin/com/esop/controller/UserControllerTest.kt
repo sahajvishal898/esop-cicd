@@ -4,7 +4,7 @@ import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
 import com.esop.dto.CreateOrderDTO
 import com.esop.dto.UserCreationDTO
-import com.esop.schema.ESOPType
+import com.esop.schema.ESOPType.*
 import com.esop.service.UserService
 import io.micronaut.http.HttpStatus
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
@@ -65,7 +65,7 @@ class UserControllerTest {
         val price = 10L
         val type = "SELL"
         val order = CreateOrderDTO(type, quantity, price)
-        userService.addingInventory(AddInventoryDTO(quantity, ESOPType.NON_PERFORMANCE), "sankar06")
+        userService.addingInventory(AddInventoryDTO(quantity, NON_PERFORMANCE.toString()), "sankar06")
 
         // Act
         spec
