@@ -89,11 +89,8 @@ class OrderService(private val userRecords: UserRecords,
         val orderExecutionPrice = sellOrder.getPrice()
         val orderExecutionQuantity = min(sellOrder.remainingQuantity, buyOrder.remainingQuantity)
 
-        buyOrder.updateRemainingQuantity(orderExecutionQuantity)
-        sellOrder.updateRemainingQuantity(orderExecutionQuantity)
-
-        buyOrder.updateStatus()
-        sellOrder.updateStatus()
+        buyOrder.updateRemainingQuantityAndStatus(orderExecutionQuantity)
+        sellOrder.updateRemainingQuantityAndStatus(orderExecutionQuantity)
 
         createOrderFilledLogs(orderExecutionQuantity, orderExecutionPrice, sellOrder, buyOrder)
 
@@ -117,21 +114,8 @@ class OrderService(private val userRecords: UserRecords,
         sellOrder: Order,
         buyOrder: Order
     ) {
-        val buyOrderLog = OrderFilledLog(
-            orderExecutionQuantity,
-            orderExecutionPrice,
-            null,
-            sellOrder.getUserName()
-        )
-        val sellOrderLog = OrderFilledLog(
-            orderExecutionQuantity,
-            orderExecutionPrice,
-            sellOrder.getEsopType(),
-            buyOrder.getUserName()
-        )
-
-        buyOrder.addOrderFilledLogs(buyOrderLog)
-        sellOrder.addOrderFilledLogs(sellOrderLog)
+        buyOrder.updateOrderLogs(orderExecutionQuantity, orderExecutionPrice, sellOrder)
+        sellOrder.updateOrderLogs(orderExecutionQuantity, orderExecutionPrice, buyOrder)
     }
 
     fun orderHistory(userName: String): Any {
