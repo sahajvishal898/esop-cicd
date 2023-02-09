@@ -1,6 +1,7 @@
 package com.esop.validators
 
 import com.esop.repository.UserRecords
+import com.esop.service.PlatformFeeService
 import com.esop.service.UserService
 import com.esop.validators.*
 import com.google.i18n.phonenumbers.NumberParseException
@@ -11,7 +12,8 @@ import jakarta.inject.Singleton
 
 @Factory
 class CustomConstraintFactory(private val userRecords: UserRecords) {
-    val username = UserService(userRecords)
+    private val platformFeeService = PlatformFeeService()
+    val username = UserService(userRecords, platformFeeService)
 
     @Singleton
     fun phoneNumberValidator(): ConstraintValidator<PhoneNumberValidator, String> {

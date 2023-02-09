@@ -19,13 +19,14 @@ import com.esop.schema.OrderType.*
 class UserServiceTest {
 
     private lateinit var userService: UserService
-
     private lateinit var userRecords: UserRecords
+    private lateinit var platformFeeService: PlatformFeeService
 
     @BeforeEach
     fun setup() {
         userRecords = UserRecords()
-        userService = UserService(userRecords)
+        platformFeeService = PlatformFeeService()
+        userService = UserService(userRecords, platformFeeService)
     }
 
 
