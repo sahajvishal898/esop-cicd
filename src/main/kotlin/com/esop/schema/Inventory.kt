@@ -1,8 +1,8 @@
 package com.esop.schema
 
+import com.esop.InsufficientInventoryException
 import com.esop.InventoryLimitExceededException
 import com.esop.constant.MAX_INVENTORY_CAPACITY
-import java.util.*
 
 
 class Inventory(
@@ -25,13 +25,12 @@ class Inventory(
         this.freeInventory = this.freeInventory + esopsToBeAdded
     }
 
-    fun moveESOPsFromFreeToLockedState(esopsToBeLocked: Long): String {
+    fun moveESOPsFromFreeToLockedState(esopsToBeLocked: Long) {
         if (this.freeInventory < esopsToBeLocked) {
-            return "Insufficient $type inventory."
+            throw InsufficientInventoryException(type)
         }
         this.freeInventory = this.freeInventory - esopsToBeLocked
         this.lockedInventory = this.lockedInventory + esopsToBeLocked
-        return "SUCCESS"
     }
 
     fun getFreeInventory(): Long {

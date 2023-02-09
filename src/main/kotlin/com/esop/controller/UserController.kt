@@ -101,7 +101,7 @@ class UserController {
         orderData.esopType?.let{esopType = ESOPType.valueOf(orderData.esopType!!)}
 
         val order = Order(orderData.quantity!!.toLong(), orderData.type.toString().uppercase(), orderData.price!!.toLong(), userName, esopType)
-        userService.orderCheckBeforePlace(order)
+        userService.checkUserDetailsForOrder(order)
 
         val placedOrderId = orderService.placeOrder(order)
         return HttpResponse.ok(

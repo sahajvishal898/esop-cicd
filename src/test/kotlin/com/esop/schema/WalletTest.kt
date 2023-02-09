@@ -1,7 +1,9 @@
 package com.esop.schema
 
+import com.esop.InsufficientFundsException
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.params.ParameterizedTest
 import org.junit.jupiter.params.provider.Arguments
 import org.junit.jupiter.params.provider.MethodSource
@@ -44,10 +46,8 @@ class WalletTest {
         val wallet = Wallet()
         wallet.addMoneyToWallet(100)
 
-        val response = wallet.moveMoneyFromFreeToLockedState(150)
-
         val expectedResult = "Insufficient funds"
-        assertEquals(expectedResult, response)
+        assertThrows<InsufficientFundsException>(expectedResult) { wallet.moveMoneyFromFreeToLockedState(150) }
     }
 
 }

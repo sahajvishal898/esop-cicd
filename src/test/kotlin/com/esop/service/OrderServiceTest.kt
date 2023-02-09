@@ -242,7 +242,7 @@ class OrderServiceTest {
 
         userRecords.getUser("aditya")!!.userWallet.addMoneyToWallet(100)
         val buyOrderByAditya = Order(10, "BUY", 10, "aditya")
-        userRecords.getUser("sankar")!!.userWallet.moveMoneyFromFreeToLockedState(100)
+        userRecords.getUser("aditya")!!.userWallet.moveMoneyFromFreeToLockedState(100)
         orderService.placeOrder(buyOrderByAditya)
 
         userRecords.getUser("kajal")!!.userNonPerfInventory.addESOPsToInventory(50)

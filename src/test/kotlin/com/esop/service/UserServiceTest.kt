@@ -1,9 +1,6 @@
 package com.esop.service
 
-import com.esop.InvalidPreOrderPlaceException
-import com.esop.InventoryLimitExceededException
-import com.esop.UserDoesNotExistException
-import com.esop.WalletLimitExceededException
+import com.esop.*
 import com.esop.constant.MAX_INVENTORY_CAPACITY
 import com.esop.constant.MAX_WALLET_CAPACITY
 import com.esop.dto.AddInventoryDTO
@@ -56,7 +53,7 @@ class UserServiceTest {
         )
 
         val expectedError = "User doesn't exist."
-        assertThrows<UserDoesNotExistException>(expectedError) { userService.orderCheckBeforePlace(order) }
+        assertThrows<UserDoesNotExistException>(expectedError) { userService.checkUserDetailsForOrder(order) }
     }
 
     @Test
@@ -95,7 +92,7 @@ class UserServiceTest {
         val order = Order(
             quantity = 10, type = "BUY", price = 10, userName = "sankar06"
         )
-        assertDoesNotThrow { userService.orderCheckBeforePlace(order) }
+        assertDoesNotThrow { userService.checkUserDetailsForOrder(order) }
     }
 
     @Test
@@ -108,7 +105,7 @@ class UserServiceTest {
         userService.addingMoney(AddWalletDTO(price = 99L), userName = "sankar06")
 
         val expectedError = "Insufficient funds"
-        assertThrows<InvalidPreOrderPlaceException>(expectedError) { userService.orderCheckBeforePlace(order) }
+        assertThrows<InsufficientFundsException>(expectedError) { userService.checkUserDetailsForOrder(order) }
     }
 
     @Test
@@ -121,7 +118,7 @@ class UserServiceTest {
         userService.addingInventory(AddInventoryDTO(MAX_INVENTORY_CAPACITY, NON_PERFORMANCE), userName = "sankar06")
 
         assertThrows<InventoryLimitExceededException> {
-            userService.orderCheckBeforePlace(order)
+            userService.checkUserDetailsForOrder(order)
         }
     }
 
@@ -133,7 +130,7 @@ class UserServiceTest {
         val order = Order(
             quantity = 10, type = "SELL", price = 10, userName = "sankar06"
         )
-        assertDoesNotThrow {  userService.orderCheckBeforePlace(order) }
+        assertDoesNotThrow {  userService.checkUserDetailsForOrder(order) }
     }
 
     @Test
@@ -146,7 +143,7 @@ class UserServiceTest {
         )
 
         val expectedError = "Insufficient non_performance inventory."
-        assertThrows<InvalidPreOrderPlaceException>(expectedError) { userService.orderCheckBeforePlace(order) }
+        assertThrows<InsufficientInventoryException>(expectedError) { userService.checkUserDetailsForOrder(order) }
     }
 
     @Test
@@ -159,7 +156,7 @@ class UserServiceTest {
         userService.addingMoney(AddWalletDTO(MAX_WALLET_CAPACITY), userName = "sankar06")
 
         assertThrows<WalletLimitExceededException> {
-            userService.orderCheckBeforePlace(order)
+            userService.checkUserDetailsForOrder(order)
         }
     }
 
@@ -172,7 +169,7 @@ class UserServiceTest {
             quantity = 10, type = "SELL", price = 10, userName = "sankar06", PERFORMANCE
         )
 
-        assertDoesNotThrow { userService.orderCheckBeforePlace(order) }
+        assertDoesNotThrow { userService.checkUserDetailsForOrder(order) }
     }
 
     @Test
@@ -184,7 +181,7 @@ class UserServiceTest {
         )
 
         val expectedError = "Insufficient performance inventory."
-        assertThrows<InvalidPreOrderPlaceException>(expectedError) { userService.orderCheckBeforePlace(order) }
+        assertThrows<InsufficientInventoryException>(expectedError) { userService.checkUserDetailsForOrder(order) }
     }
 
 }
