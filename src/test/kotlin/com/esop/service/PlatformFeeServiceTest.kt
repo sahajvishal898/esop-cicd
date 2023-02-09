@@ -1,11 +1,12 @@
 package com.esop.service
 
+import com.esop.schema.ESOPType.NON_PERFORMANCE
+import com.esop.schema.ESOPType.PERFORMANCE
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
-import com.esop.schema.ESOPType.*
 
 
 class PlatformFeeServiceTest {

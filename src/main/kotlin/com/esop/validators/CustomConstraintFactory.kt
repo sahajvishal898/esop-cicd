@@ -3,7 +3,6 @@ package com.esop.validators
 import com.esop.repository.UserRecords
 import com.esop.service.PlatformFeeService
 import com.esop.service.UserService
-import com.esop.validators.*
 import com.google.i18n.phonenumbers.NumberParseException
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import io.micronaut.context.annotation.Factory

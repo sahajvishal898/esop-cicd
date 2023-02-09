@@ -2,10 +2,10 @@ package com.esop.service
 
 import com.esop.constant.FEE_PERCENTAGE
 import com.esop.schema.ESOPType
+import com.esop.schema.ESOPType.PERFORMANCE
 import jakarta.inject.Singleton
 import java.math.BigInteger
 import kotlin.math.round
-import com.esop.schema.ESOPType.*
 
 @Singleton
 class PlatformFeeService {

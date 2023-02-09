@@ -7,14 +7,16 @@ import com.esop.dto.AddWalletDTO
 import com.esop.dto.UserCreationDTO
 import com.esop.exceptions.*
 import com.esop.repository.UserRecords
+import com.esop.schema.ESOPType.NON_PERFORMANCE
+import com.esop.schema.ESOPType.PERFORMANCE
 import com.esop.schema.Order
+import com.esop.schema.OrderType.BUY
+import com.esop.schema.OrderType.SELL
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
-import com.esop.schema.ESOPType.*
-import com.esop.schema.OrderType.*
 
 class UserServiceTest {
 
@@ -132,7 +134,7 @@ class UserServiceTest {
         val order = Order(
             quantity = 10, type = SELL, price = 10, userName = "sankar06"
         )
-        assertDoesNotThrow {  userService.checkUserDetailsForOrder(order) }
+        assertDoesNotThrow { userService.checkUserDetailsForOrder(order) }
     }
 
     @Test

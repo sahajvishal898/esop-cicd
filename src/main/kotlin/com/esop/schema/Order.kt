@@ -1,8 +1,8 @@
 package com.esop.schema
 
-import com.esop.schema.ESOPType.*
+import com.esop.schema.ESOPType.NON_PERFORMANCE
 import com.esop.schema.OrderStatus.*
-import com.esop.schema.OrderType.*
+import com.esop.schema.OrderType.BUY
 
 class Order(
     private var quantity: Long,
@@ -33,13 +33,15 @@ class Order(
         return userName
     }
 
-    fun getEsopType(): ESOPType{
+    fun getEsopType(): ESOPType {
         return esopType
     }
-    fun updateRemainingQuantityAndStatus(quantityToBeUpdated: Long){
+
+    fun updateRemainingQuantityAndStatus(quantityToBeUpdated: Long) {
         updateRemainingQuantity(quantityToBeUpdated)
         updateStatus()
     }
+
     fun updateRemainingQuantity(quantityToBeUpdated: Long) {
         remainingQuantity -= quantityToBeUpdated
     }
@@ -56,12 +58,12 @@ class Order(
         orderExecutionQuantity: Long,
         orderExecutionPrice: Long,
         order: Order
-    ){
+    ) {
         orderFilledLogs.add(
             OrderFilledLog(
                 orderExecutionQuantity,
                 orderExecutionPrice,
-                if(type == BUY) order.getEsopType() else null,
+                if (type == BUY) order.getEsopType() else null,
                 order.getUserName()
             )
         )

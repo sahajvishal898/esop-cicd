@@ -10,12 +10,10 @@ class InventoryLimitExceededException : HttpException(HttpStatus.BAD_REQUEST, er
 
 class WalletLimitExceededException : HttpException(HttpStatus.BAD_REQUEST, errors["WALLET_LIMIT_EXCEEDED"]!!)
 
-class PlatformFeeLessThanZeroException : Exception(errors["POSITIVE_PLATFORM_FEE"])
+class InsufficientFundsException() : Throwable(errors["INSUFFICIENT_FUNDS"])
 
-class InsufficientFundsException(): Throwable(errors["INSUFFICIENT_FUNDS"])
+class InsufficientInventoryException(val type: ESOPType) : Throwable("Insufficient $type inventory") {}
 
-class InsufficientInventoryException(val type: ESOPType): Throwable("Insufficient $type inventory"){}
+class UserDoesNotExistException() : Throwable(errors["USER_DOES_NOT_EXISTS"])
 
-class UserDoesNotExistException(): Throwable(errors["USER_DOES_NOT_EXISTS"])
-
-class InvalidPreOrderPlaceException(val errorList: List<String>): Throwable()
+class InvalidPreOrderPlaceException(val errorList: List<String>) : Throwable()
