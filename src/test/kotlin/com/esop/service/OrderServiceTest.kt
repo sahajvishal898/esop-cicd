@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.lang.Thread.sleep
-
+import com.esop.schema.ESOPType.*
 class OrderServiceTest {
 
     private lateinit var userRecords:UserRecords
@@ -318,7 +318,7 @@ class OrderServiceTest {
     fun `It should match BUY order for existing SELL order for PERFORMANCE esop type`() {
         //Arrange
         userRecords.getUser("kajal")!!.userPerformanceInventory.addESOPsToInventory(50)
-        val sellOrder = Order(10, "SELL", 10, "kajal", "PERFORMANCE")
+        val sellOrder = Order(10, "SELL", 10, "kajal", PERFORMANCE)
         userRecords.getUser("kajal")!!.userPerformanceInventory.moveESOPsFromFreeToLockedState(10)
         orderService.placeOrder(sellOrder)
 
@@ -345,7 +345,7 @@ class OrderServiceTest {
         orderService.placeOrder(buyOrder)
 
         userRecords.getUser("kajal")!!.userPerformanceInventory.addESOPsToInventory(50)
-        val sellOrder = Order(10, "SELL", 10, "kajal", "PERFORMANCE")
+        val sellOrder = Order(10, "SELL", 10, "kajal", PERFORMANCE)
         userRecords.getUser("kajal")!!.userPerformanceInventory.moveESOPsFromFreeToLockedState(10)
 
         //Act
@@ -389,7 +389,7 @@ class OrderServiceTest {
         orderService.placeOrder(sellOrderByKajal)
 
         userRecords.getUser("arun")!!.userPerformanceInventory.addESOPsToInventory(50)
-        val sellOrderByArun = Order(10, "SELL", 10, "arun", "PERFORMANCE")
+        val sellOrderByArun = Order(10, "SELL", 10, "arun", PERFORMANCE)
         userRecords.getUser("arun")!!.userPerformanceInventory.moveESOPsFromFreeToLockedState(10)
         orderService.placeOrder(sellOrderByArun)
 
@@ -425,12 +425,12 @@ class OrderServiceTest {
     fun `It should place 2 SELL orders of PERFORMANCE esop type followed by a BUY order where the BUY order is complete`() {
         //Arrange
         userRecords.getUser("kajal")!!.userPerformanceInventory.addESOPsToInventory(50)
-        val sellOrderByKajal = Order(10, "SELL", 10, "kajal", "PERFORMANCE")
+        val sellOrderByKajal = Order(10, "SELL", 10, "kajal", PERFORMANCE)
         userRecords.getUser("kajal")!!.userPerformanceInventory.moveESOPsFromFreeToLockedState(10)
         orderService.placeOrder(sellOrderByKajal)
 
         userRecords.getUser("arun")!!.userPerformanceInventory.addESOPsToInventory(50)
-        val sellOrderByArun = Order(10, "SELL", 10, "arun", "PERFORMANCE")
+        val sellOrderByArun = Order(10, "SELL", 10, "arun", PERFORMANCE)
         userRecords.getUser("arun")!!.userPerformanceInventory.moveESOPsFromFreeToLockedState(10)
         orderService.placeOrder(sellOrderByArun)
 
@@ -466,12 +466,12 @@ class OrderServiceTest {
     fun `It should place 2 SELL orders of PERFORMANCE esop type followed by a BUY order where higher timestamp order placed first`() {
         //Arrange
         userRecords.getUser("kajal")!!.userPerformanceInventory.addESOPsToInventory(50)
-        val sellOrderByKajal = Order(10, "SELL", 10, "kajal", "PERFORMANCE")
+        val sellOrderByKajal = Order(10, "SELL", 10, "kajal", PERFORMANCE)
         userRecords.getUser("kajal")!!.userPerformanceInventory.moveESOPsFromFreeToLockedState(10)
 
         sleep(10)
         userRecords.getUser("arun")!!.userPerformanceInventory.addESOPsToInventory(50)
-        val sellOrderByArun = Order(10, "SELL", 10, "arun", "PERFORMANCE")
+        val sellOrderByArun = Order(10, "SELL", 10, "arun", PERFORMANCE)
         userRecords.getUser("arun")!!.userPerformanceInventory.moveESOPsFromFreeToLockedState(10)
         orderService.placeOrder(sellOrderByArun)
         orderService.placeOrder(sellOrderByKajal)
@@ -643,7 +643,7 @@ class OrderServiceTest {
         orderService.placeOrder(firstSellOrderByKajal)
 
         userRecords.getUser("kajal")!!.userPerformanceInventory.addESOPsToInventory(5)
-        val secondSellOrderByKajal = Order(5, "SELL", 25, "kajal", "PERFORMANCE")
+        val secondSellOrderByKajal = Order(5, "SELL", 25, "kajal", PERFORMANCE)
         userRecords.getUser("kajal")!!.userPerformanceInventory.moveESOPsFromFreeToLockedState(5)
         orderService.placeOrder(secondSellOrderByKajal)
 

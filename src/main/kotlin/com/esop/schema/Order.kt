@@ -2,18 +2,14 @@ package com.esop.schema
 
 import com.esop.schema.InventoryPriority.*
 
-enum class InventoryPriority(val priority: Int) {
-    NONE(0),
-    PERFORMANCE(1),
-    NON_PERFORMANCE(2)
-}
+
 
 class Order(
     private var quantity: Long,
     private var type: String,
     private var price: Long,
     private var userName: String,
-    private var esopType: String = "NON_PERFORMANCE"
+    private var esopType: ESOPType = ESOPType.NON_PERFORMANCE
 ) {
     var timeStamp = System.currentTimeMillis()
     var orderStatus: String = "PENDING" // COMPLETED, PARTIAL, PENDING
@@ -30,9 +26,9 @@ class Order(
         }
     }
 
-    private fun isTypeSellAndEsopTypePerformance() = type == "SELL" && esopType == "PERFORMANCE"
+    private fun isTypeSellAndEsopTypePerformance() = type == "SELL" && esopType == ESOPType.PERFORMANCE
 
-    private fun isTypeSellAndEsopTypeNonPerformance() = type == "SELL" && esopType == "NON_PERFORMANCE"
+    private fun isTypeSellAndEsopTypeNonPerformance() = type == "SELL" && esopType == ESOPType.NON_PERFORMANCE
     fun getQuantity(): Long {
         return quantity
     }
@@ -49,7 +45,7 @@ class Order(
         return userName
     }
 
-    fun getEsopType(): String{
+    fun getEsopType(): ESOPType{
         return esopType
     }
 

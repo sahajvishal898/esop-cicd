@@ -1,11 +1,11 @@
 package com.esop.service
 
-
 import com.esop.constant.FEE_PERCENTAGE
+import com.esop.schema.ESOPType
 import jakarta.inject.Singleton
 import java.math.BigInteger
 import kotlin.math.round
-
+import com.esop.schema.ESOPType.*
 
 @Singleton
 class PlatformFeeService {
@@ -18,9 +18,9 @@ class PlatformFeeService {
 
     private fun calculateFee(tradedAmount: Long) = round(tradedAmount * FEE_PERCENTAGE).toLong()
 
-    fun deductPlatformFeeFrom(tradedAmount: Long, esopType: String): Long {
+    fun deductPlatformFeeFrom(tradedAmount: Long, esopType: ESOPType): Long {
         if (tradedAmount < 0) throw IllegalArgumentException("Traded Amount cannot be negative")
-        if (esopType == "PERFORMANCE") return tradedAmount
+        if (esopType == PERFORMANCE) return tradedAmount
 
         val fee = calculateFee(tradedAmount)
         totalPlatformFee += fee.toBigInteger()

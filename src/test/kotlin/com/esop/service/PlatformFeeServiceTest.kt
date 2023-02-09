@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.math.BigInteger
+import com.esop.schema.ESOPType.*
 
 
 class PlatformFeeServiceTest {
@@ -20,7 +21,7 @@ class PlatformFeeServiceTest {
     fun `it should deduct platform fee from the given amount as ESOP type is NON_PERFORMANCE`() {
         val amount = 1000L
 
-        val actualAmount = platformFeeService.deductPlatformFeeFrom(amount, "NON_PERFORMANCE")
+        val actualAmount = platformFeeService.deductPlatformFeeFrom(amount, NON_PERFORMANCE)
 
         val expectedAmount = 980L
         val expectedPlatformFee = BigInteger("20")
@@ -32,7 +33,7 @@ class PlatformFeeServiceTest {
     fun `it should not deduct platform fee from the given amount as ESOP type is PERFORMANCE`() {
         val amount = 1000L
 
-        val actualAmount = platformFeeService.deductPlatformFeeFrom(amount, "PERFORMANCE")
+        val actualAmount = platformFeeService.deductPlatformFeeFrom(amount, PERFORMANCE)
 
         val expectedAmount = 1000L
         val expectedPlatformFee = BigInteger("0")
@@ -45,7 +46,7 @@ class PlatformFeeServiceTest {
         val tradedAmount: Long = -100
 
         Assertions.assertThrows(IllegalArgumentException::class.java) {
-            platformFeeService.deductPlatformFeeFrom(tradedAmount, "NON_PERFORMANCE")
+            platformFeeService.deductPlatformFeeFrom(tradedAmount, NON_PERFORMANCE)
         }
     }
 }
