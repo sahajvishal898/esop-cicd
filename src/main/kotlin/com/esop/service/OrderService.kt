@@ -1,47 +1,19 @@
 package com.esop.service
 
-
-import com.esop.constant.errors
+import com.esop.exceptions.UserDoesNotExistException
 import com.esop.repository.OrderRecords
-import com.esop.repository.UserRecords
-import com.esop.schema.ESOPType
 import com.esop.schema.History
 import com.esop.schema.Order
 import com.esop.schema.OrderStatus.COMPLETED
 import com.esop.schema.OrderType.BUY
-import com.esop.schema.User
 import jakarta.inject.Singleton
 import kotlin.math.min
 
 @Singleton
 class OrderService(
-    private val userRecords: UserRecords,
-    private val orderRecords: OrderRecords,
-    private val platformFeeService: PlatformFeeService
+    private val userService: UserService,
+    private val orderRecords: OrderRecords
 ) {
-
-    private fun updateUserDetails(currentTradeQuantity: Long, sellerOrder: Order, buyerOrder: Order) {
-        val sellAmount = sellerOrder.getPrice() * (currentTradeQuantity)
-        val buyer = userRecords.getUser(buyerOrder.getUserName())!!
-        val seller = userRecords.getUser(sellerOrder.getUserName())!!
-
-        updateWalletBalances(sellAmount, sellerOrder.getEsopType(), buyer, seller)
-
-        seller.transferLockedESOPsTo(buyer, sellerOrder.getEsopType(), currentTradeQuantity)
-
-        val amountToBeReleased = (buyerOrder.getPrice() - sellerOrder.getPrice()) * (currentTradeQuantity)
-        buyer.userWallet.moveMoneyFromLockedToFree(amountToBeReleased)
-    }
-
-    private fun updateWalletBalances(
-        sellAmount: Long, esopType: ESOPType, buyer: User, seller: User
-    ) {
-        val adjustedSellAmount = platformFeeService.deductPlatformFeeFrom(sellAmount, esopType)
-
-        buyer.userWallet.removeMoneyFromLockedState(sellAmount)
-        seller.userWallet.addMoneyToWallet(adjustedSellAmount)
-    }
-
 
     fun placeOrder(order: Order): Long {
         if (order.getType() == BUY) {
@@ -49,7 +21,7 @@ class OrderService(
         } else {
             executeSellOrder(order)
         }
-        userRecords.getUser(order.getUserName())?.orderList?.add(order)
+        userService.getUser(order.getUserName())?.orderList?.add(order)
         return order.orderID
     }
 
@@ -78,7 +50,7 @@ class OrderService(
 
         createOrderFilledLogs(orderExecutionQuantity, orderExecutionPrice, sellOrder, buyOrder)
 
-        updateUserDetails(orderExecutionQuantity, sellOrder, buyOrder)
+        userService.updateUserDetails(orderExecutionQuantity, sellOrder, buyOrder)
 
         removeCompletedOrders(buyOrder, sellOrder)
     }
@@ -99,13 +71,11 @@ class OrderService(
         sellOrder.updateOrderLogs(orderExecutionQuantity, orderExecutionPrice, buyOrder)
     }
 
-    fun orderHistory(userName: String): Any {
-        val userErrors = ArrayList<String>()
-        if (!userRecords.checkIfUserExists(userName)) {
-            errors["USER_DOES_NOT_EXISTS"]?.let { userErrors.add(it) }
-            return mapOf("error" to userErrors)
+    fun orderHistory(userName: String): ArrayList<History> {
+        if (!userService.checkIfUserExists(userName)) {
+            throw UserDoesNotExistException()
         }
-        val orderDetails = userRecords.getUser(userName)!!.orderList
+        val orderDetails = userService.getUser(userName)!!.orderList
         val orderHistory = ArrayList<History>()
 
         for (orders in orderDetails) {

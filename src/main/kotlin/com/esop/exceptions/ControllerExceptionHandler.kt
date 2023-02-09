@@ -2,7 +2,6 @@ package com.esop.exceptions
 
 import com.fasterxml.jackson.core.JsonProcessingException
 import io.micronaut.core.convert.exceptions.ConversionErrorException
-import io.micronaut.http.HttpRequest
 import io.micronaut.http.HttpResponse
 import io.micronaut.http.HttpStatus
 import io.micronaut.http.annotation.Error
@@ -18,15 +17,12 @@ class ControllerExceptionHandler {
     }
 
     @Error(exception = JsonProcessingException::class)
-    fun onJSONProcessingException(ex: JsonProcessingException): HttpResponse<Map<String, ArrayList<String>>> {
+    fun onJSONProcessingException(): HttpResponse<Map<String, ArrayList<String>>> {
         return HttpResponse.badRequest(mapOf("errors" to arrayListOf("Invalid JSON format")))
     }
 
     @Error(exception = UnsatisfiedBodyRouteException::class)
-    fun onUnsatisfiedBodyRouteException(
-        request: HttpRequest<*>,
-        ex: UnsatisfiedBodyRouteException
-    ): HttpResponse<Map<String, List<String?>>> {
+    fun onUnsatisfiedBodyRouteException(): HttpResponse<Map<String, List<String?>>> {
         return HttpResponse.badRequest(mapOf("errors" to arrayListOf("Request body missing")))
     }
 
