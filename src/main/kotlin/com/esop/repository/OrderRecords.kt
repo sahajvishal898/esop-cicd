@@ -1,6 +1,6 @@
 package com.esop.repository
 
-import com.esop.schema.InventoryPriority
+import com.esop.schema.ESOPType.*
 import com.esop.schema.Order
 import jakarta.inject.Singleton
 
@@ -63,12 +63,12 @@ class OrderRecords {
                 val priorityComparison = firstOrder.inventoryPriority.compareTo(secondOrder.inventoryPriority)
                 if(priorityComparison != 0) return priorityComparison
                 when(firstOrder.inventoryPriority){
-                    InventoryPriority.NON_PERFORMANCE -> {
+                    NON_PERFORMANCE -> {
                         val priceComparison = firstOrder.getPrice().compareTo(secondOrder.getPrice())
                         if(priceComparison != 0) return priceComparison
                         return firstOrder.timeStamp.compareTo(secondOrder.timeStamp)
                     }
-                    InventoryPriority.PERFORMANCE -> return firstOrder.timeStamp.compareTo(secondOrder.timeStamp)
+                    PERFORMANCE -> return firstOrder.timeStamp.compareTo(secondOrder.timeStamp)
                     else -> return 1
                 }
             }
