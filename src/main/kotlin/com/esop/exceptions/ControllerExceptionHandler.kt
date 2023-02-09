@@ -52,22 +52,24 @@ class ControllerExceptionHandler {
     fun userDoesNotExistException(exception: UserDoesNotExistException): HttpResponse<Map<String, List<String?>>>? {
         return HttpResponse.badRequest(mapOf("error" to listOf(exception.message)))
     }
+
     @Error(global = true)
     fun invalidPreOrderPlaceException(exception: InvalidPreOrderPlaceException): HttpResponse<Map<String, List<String>>>? {
         return HttpResponse.badRequest(mapOf("error" to exception.errorList))
     }
+
     @Error(global = true)
-    fun insufficientFundsException(exception: InsufficientFundsException): HttpResponse<Map<String, List<String?>>>?{
+    fun insufficientFundsException(exception: InsufficientFundsException): HttpResponse<Map<String, List<String?>>>? {
         return HttpResponse.badRequest(mapOf("error" to listOf(exception.message)))
     }
 
     @Error(global = true)
-    fun insufficientInventoryException(exception: InsufficientInventoryException): HttpResponse<Map<String, List<String?>>>?{
+    fun insufficientInventoryException(exception: InsufficientInventoryException): HttpResponse<Map<String, List<String?>>>? {
         return HttpResponse.badRequest(mapOf("error" to listOf(exception.message)))
     }
 
     @Error(global = true)
-    fun globalError(e: Throwable): Map<String,List<String?>> {
+    fun globalError(e: Throwable): Map<String, List<String?>> {
         return mapOf("error" to listOf(e.message))
     }
 

@@ -1,8 +1,9 @@
 package com.esop.schema
 
+import com.esop.schema.ESOPType.PERFORMANCE
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.Test
-import com.esop.schema.ESOPType.*
+
 class UserTest {
 
     @Test

@@ -2,31 +2,33 @@ package com.esop.service
 
 import com.esop.repository.OrderRecords
 import com.esop.repository.UserRecords
+import com.esop.schema.ESOPType.PERFORMANCE
 import com.esop.schema.Order
+import com.esop.schema.OrderStatus.*
+import com.esop.schema.OrderType.BUY
+import com.esop.schema.OrderType.SELL
 import com.esop.schema.User
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import java.lang.Thread.sleep
-import com.esop.schema.ESOPType.*
-import com.esop.schema.OrderStatus.*
-import com.esop.schema.OrderType.*
 
 class OrderServiceTest {
 
-    private lateinit var userRecords:UserRecords
-    private lateinit var orderService:OrderService
+    private lateinit var userRecords: UserRecords
+    private lateinit var orderService: OrderService
     private lateinit var userService: UserService
     private lateinit var orderRecords: OrderRecords
     private lateinit var platformFeeService: PlatformFeeService
+
     @BeforeEach
     fun `It should create user`() {
         userRecords = UserRecords()
         platformFeeService = PlatformFeeService()
-        userService = UserService(userRecords,platformFeeService)
+        userService = UserService(userRecords, platformFeeService)
         orderRecords = OrderRecords()
-        orderService = OrderService(userService,orderRecords)
+        orderService = OrderService(userService, orderRecords)
 
         val buyer1 = User("Sankaranarayanan", "M", "7550276216", "sankaranarayananm@sahaj.ai", "sankar")
         val buyer2 = User("Aditya", "Tiwari", "", "aditya@sahaj.ai", "aditya")
@@ -307,7 +309,9 @@ class OrderServiceTest {
 
         assertEquals(
             COMPLETED,
-            userRecords.getUser("sankar")!!.orderList[userRecords.getUser("sankar")!!.orderList.indexOf(sellOrderBySankar)].orderStatus
+            userRecords.getUser("sankar")!!.orderList[userRecords.getUser("sankar")!!.orderList.indexOf(
+                sellOrderBySankar
+            )].orderStatus
         )
         assertEquals(
             COMPLETED,
@@ -667,19 +671,27 @@ class OrderServiceTest {
         assertEquals(525, userRecords.getUser("sankar")!!.userWallet.getFreeMoney())
         assertEquals(
             PENDING,
-            userRecords.getUser("sankar")!!.orderList[userRecords.getUser("sankar")!!.orderList.indexOf(firstBuyOrderBySankar)].orderStatus
+            userRecords.getUser("sankar")!!.orderList[userRecords.getUser("sankar")!!.orderList.indexOf(
+                firstBuyOrderBySankar
+            )].orderStatus
         )
         assertEquals(
             PARTIAL,
-            userRecords.getUser("sankar")!!.orderList[userRecords.getUser("sankar")!!.orderList.indexOf(secondBuyOrderBySankar)].orderStatus
+            userRecords.getUser("sankar")!!.orderList[userRecords.getUser("sankar")!!.orderList.indexOf(
+                secondBuyOrderBySankar
+            )].orderStatus
         )
         assertEquals(
             COMPLETED,
-            userRecords.getUser("kajal")!!.orderList[userRecords.getUser("kajal")!!.orderList.indexOf(firstSellOrderByKajal)].orderStatus
+            userRecords.getUser("kajal")!!.orderList[userRecords.getUser("kajal")!!.orderList.indexOf(
+                firstSellOrderByKajal
+            )].orderStatus
         )
         assertEquals(
             COMPLETED,
-            userRecords.getUser("kajal")!!.orderList[userRecords.getUser("kajal")!!.orderList.indexOf(secondSellOrderByKajal)].orderStatus
+            userRecords.getUser("kajal")!!.orderList[userRecords.getUser("kajal")!!.orderList.indexOf(
+                secondSellOrderByKajal
+            )].orderStatus
         )
     }
 

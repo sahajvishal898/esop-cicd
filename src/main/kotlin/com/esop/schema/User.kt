@@ -35,13 +35,14 @@ class User(
         userPerformanceInventory.moveESOPsFromFreeToLockedState(quantity)
     }
 
-    fun lockNonPerformanceInventory(quantity: Long){
+    fun lockNonPerformanceInventory(quantity: Long) {
         userNonPerfInventory.moveESOPsFromFreeToLockedState(quantity)
     }
 
     fun lockAmount(price: Long) {
         userWallet.moveMoneyFromFreeToLockedState(price)
     }
+
     private fun getInventory(type: ESOPType): Inventory {
         if (type == ESOPType.PERFORMANCE) return userPerformanceInventory
         return userNonPerfInventory
