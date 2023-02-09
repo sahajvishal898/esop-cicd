@@ -97,7 +97,7 @@ class UserController {
 
     @Post(uri = "/{userName}/order", consumes = [MediaType.APPLICATION_JSON], produces = [MediaType.APPLICATION_JSON])
     fun order(userName: String, @Body @Valid orderData: CreateOrderDTO): Any? {
-        var esopType = ESOPType.NON_PERFORMANCE
+        var esopType = NON_PERFORMANCE
         orderData.esopType?.let{esopType = ESOPType.valueOf(orderData.esopType!!)}
 
         val order = Order(orderData.quantity!!.toLong(), orderData.type.toString().uppercase(), orderData.price!!.toLong(), userName, esopType)

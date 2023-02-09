@@ -1,5 +1,7 @@
 package com.esop.schema
 
+import com.esop.schema.OrderStatus.COMPLETED
+import com.esop.schema.OrderStatus.PARTIAL
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -21,7 +23,7 @@ class OrderTest{
 
         buy.updateStatus()
 
-        assertEquals("COMPLETED",buy.orderStatus)
+        assertEquals(COMPLETED,buy.orderStatus)
     }
 
     @Test
@@ -31,7 +33,7 @@ class OrderTest{
 
         buy.updateStatus()
 
-        assertEquals("PARTIAL",buy.orderStatus)
+        assertEquals(PARTIAL,buy.orderStatus)
     }
 
     @Test

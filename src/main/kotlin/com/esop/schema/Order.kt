@@ -1,7 +1,7 @@
 package com.esop.schema
 
 import com.esop.schema.ESOPType.*
-
+import com.esop.schema.OrderStatus.*
 
 
 class Order(
@@ -12,7 +12,7 @@ class Order(
     private var esopType: ESOPType = NON_PERFORMANCE
 ) {
     var timeStamp = System.currentTimeMillis()
-    var orderStatus: String = "PENDING" // COMPLETED, PARTIAL, PENDING
+    var orderStatus: OrderStatus = PENDING // COMPLETED, PARTIAL, PENDING
     var orderFilledLogs: MutableList<OrderFilledLog> = mutableListOf()
     var orderID: Long = -1
     var inventoryPriority = NON_PERFORMANCE
@@ -55,9 +55,9 @@ class Order(
 
     fun updateStatus() {
         if (remainingQuantity == 0L) {
-            orderStatus = "COMPLETED"
+            orderStatus = COMPLETED
         } else if (remainingQuantity != quantity) {
-            orderStatus = "PARTIAL"
+            orderStatus = PARTIAL
         }
     }
 
