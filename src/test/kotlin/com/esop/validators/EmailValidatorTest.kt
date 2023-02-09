@@ -1,6 +1,5 @@
 package com.esop.validators
 
-import com.esop.CustomConstraintFactory
 import com.esop.repository.UserRecords
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue

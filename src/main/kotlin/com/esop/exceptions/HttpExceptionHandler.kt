@@ -1,4 +1,4 @@
-package com.esop
+package com.esop.exceptions
 
 import io.micronaut.context.annotation.Requirements
 import io.micronaut.context.annotation.Requires

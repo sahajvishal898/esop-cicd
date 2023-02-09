@@ -1,7 +1,6 @@
 package com.esop.service
 
-import com.esop.InvalidPreOrderPlaceException
-import com.esop.UserDoesNotExistException
+import com.esop.exceptions.UserDoesNotExistException
 import com.esop.constant.errors
 import com.esop.dto.AddInventoryDTO
 import com.esop.dto.AddWalletDTO
@@ -24,7 +23,7 @@ class UserService(private val userRecords: UserRecords) {
 
     fun checkUserDetailsForOrder(order: Order){
         if (!userRecords.checkIfUserExists(order.getUserName())) {
-            throw UserDoesNotExistException("User doesn't exist.")
+            throw UserDoesNotExistException()
         }
 
         val user = userRecords.getUser(order.getUserName())!!

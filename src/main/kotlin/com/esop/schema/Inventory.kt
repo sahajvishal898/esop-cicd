@@ -1,7 +1,7 @@
 package com.esop.schema
 
-import com.esop.InsufficientInventoryException
-import com.esop.InventoryLimitExceededException
+import com.esop.exceptions.InsufficientInventoryException
+import com.esop.exceptions.InventoryLimitExceededException
 import com.esop.constant.MAX_INVENTORY_CAPACITY
 
 
