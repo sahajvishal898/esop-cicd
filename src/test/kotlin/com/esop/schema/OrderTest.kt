@@ -40,14 +40,9 @@ class OrderTest{
     @Test
     fun `it should add order log`(){
         val buyOrder = Order(10,BUY,10,"Sankar")
-        val buyOrderLog = OrderFilledLog(
-            10,
-            10,
-            null,
-            "Sankar"
-        )
+        val sellOrder = Order(10, SELL, 10, "Kajal")
 
-        buyOrder.addOrderFilledLogs(buyOrderLog)
+        buyOrder.updateOrderLogs(10, 10, sellOrder)
 
         assertEquals(1,buyOrder.orderFilledLogs.size)
     }

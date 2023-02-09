@@ -48,7 +48,10 @@ class Order(
     fun getEsopType(): ESOPType{
         return esopType
     }
-
+    fun updateRemainingQuantityAndStatus(quantityToBeUpdated: Long){
+        updateRemainingQuantity(quantityToBeUpdated)
+        updateStatus()
+    }
     fun updateRemainingQuantity(quantityToBeUpdated: Long) {
         remainingQuantity -= quantityToBeUpdated
     }
@@ -61,7 +64,18 @@ class Order(
         }
     }
 
-    fun addOrderFilledLogs(orderFilledLog: OrderFilledLog) {
-        orderFilledLogs.add(orderFilledLog)
+    fun updateOrderLogs(
+        orderExecutionQuantity: Long,
+        orderExecutionPrice: Long,
+        order: Order
+    ){
+        orderFilledLogs.add(
+            OrderFilledLog(
+                orderExecutionQuantity,
+                orderExecutionPrice,
+                if(type == BUY) order.getEsopType() else null,
+                order.getUserName()
+            )
+        )
     }
 }
