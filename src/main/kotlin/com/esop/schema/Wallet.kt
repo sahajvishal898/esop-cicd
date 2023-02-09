@@ -1,7 +1,7 @@
 package com.esop.schema
 
-import com.esop.InsufficientFundsException
-import com.esop.WalletLimitExceededException
+import com.esop.exceptions.InsufficientFundsException
+import com.esop.exceptions.WalletLimitExceededException
 import com.esop.constant.MAX_WALLET_CAPACITY
 
 class Wallet {

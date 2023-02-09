@@ -1,4 +1,4 @@
-package com.esop
+package com.esop.validators
 
 import com.esop.repository.UserRecords
 import com.esop.service.UserService
