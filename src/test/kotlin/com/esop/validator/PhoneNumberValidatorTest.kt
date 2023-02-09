@@ -1,4 +1,4 @@
-package com.esop.validators
+package com.esop.validator
 
 import com.google.i18n.phonenumbers.PhoneNumberUtil
 import org.junit.jupiter.api.Assertions.*

@@ -43,8 +43,7 @@ class UserController {
         var esopType = NON_PERFORMANCE
         orderData.esopType?.let{esopType = ESOPType.valueOf(orderData.esopType!!)}
 
-        val order = Order(orderData.quantity!!.toLong(), OrderType.valueOf(orderData.type!!.uppercase()), orderData.price!!.toLong(), userName, esopType)
-        userService.checkUserDetailsForOrder(order)
+        val order = Order(orderData.quantity!!, OrderType.valueOf(orderData.type!!.uppercase()), orderData.price!!, userName, esopType)
 
         val placedOrderId = orderService.placeOrder(order)
         return HttpResponse.ok(
