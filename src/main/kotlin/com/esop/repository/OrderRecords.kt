@@ -16,10 +16,12 @@ class OrderRecords {
     }
 
     fun addBuyOrder(buyOrder: Order) {
+        buyOrder.orderID = generateOrderId()
         buyOrders.add(buyOrder)
     }
 
     fun addSellOrder(sellOrder: Order) {
+        sellOrder.orderID = generateOrderId()
         sellOrders.add(sellOrder)
     }
 
@@ -60,9 +62,9 @@ class OrderRecords {
     private fun sortSellOrders(): List<Order> {
         return sellOrders.sortedWith(object : Comparator<Order> {
             override fun compare(firstOrder: Order, secondOrder: Order): Int {
-                val priorityComparison = firstOrder.inventoryPriority.compareTo(secondOrder.inventoryPriority)
+                val priorityComparison = firstOrder.getEsopType().compareTo(secondOrder.getEsopType())
                 if(priorityComparison != 0) return priorityComparison
-                when(firstOrder.inventoryPriority){
+                when(firstOrder.getEsopType()){
                     NON_PERFORMANCE -> {
                         val priceComparison = firstOrder.getPrice().compareTo(secondOrder.getPrice())
                         if(priceComparison != 0) return priceComparison

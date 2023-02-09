@@ -44,8 +44,6 @@ class OrderService(
 
 
     fun placeOrder(order: Order): Long {
-        order.orderID = orderRecords.generateOrderId()
-
         if (order.getType() == BUY) {
             executeBuyOrder(order)
         } else {
