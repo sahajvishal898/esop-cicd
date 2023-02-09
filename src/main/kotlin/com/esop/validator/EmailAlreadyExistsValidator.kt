@@ -1,4 +1,4 @@
-package com.esop.validators
+package com.esop.validator
 
 import javax.validation.Constraint
 
