@@ -8,6 +8,7 @@ import com.esop.dto.AddWalletDTO
 import com.esop.dto.UserCreationDTO
 import com.esop.repository.UserRecords
 import com.esop.schema.Order
+import com.esop.schema.OrderType.*
 import com.esop.schema.User
 import jakarta.inject.Singleton
 import com.esop.schema.ESOPType.*
@@ -31,11 +32,11 @@ class UserService(private val userRecords: UserRecords) {
         val nonPerformanceInventory = user.userNonPerfInventory
 
         when(order.getType()){
-            "BUY"->{
+            BUY->{
                 nonPerformanceInventory.willInventoryOverflowOnAdding(order.getQuantity())
                 user.lockAmount(order.getPrice() * order.getQuantity())
             }
-            "SELL"->{
+            SELL->{
                 wallet.willWalletOverflowOnAdding(order.getPrice() * order.getQuantity())
                 checkAndLockInventory(order, user)
             }

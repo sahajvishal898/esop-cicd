@@ -21,6 +21,7 @@ import jakarta.inject.Inject
 import javax.validation.ConstraintViolationException
 import javax.validation.Valid
 import com.esop.schema.ESOPType.*
+import com.esop.schema.OrderType
 
 
 @Validated
@@ -100,7 +101,7 @@ class UserController {
         var esopType = NON_PERFORMANCE
         orderData.esopType?.let{esopType = ESOPType.valueOf(orderData.esopType!!)}
 
-        val order = Order(orderData.quantity!!.toLong(), orderData.type.toString().uppercase(), orderData.price!!.toLong(), userName, esopType)
+        val order = Order(orderData.quantity!!.toLong(), OrderType.valueOf(orderData.type!!.uppercase()), orderData.price!!.toLong(), userName, esopType)
         userService.checkUserDetailsForOrder(order)
 
         val placedOrderId = orderService.placeOrder(order)

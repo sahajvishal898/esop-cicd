@@ -10,9 +10,9 @@ class OrderRecordsTest{
 //
 //    @Test
 //    fun `should return sell order`(){
-//        val sellOrder = Order(10,"SELL",10,"sankar")
+//        val sellOrder = Order(10,SELL,10,"sankar")
 //        orderRecords.addSellOrder(sellOrder)
-//        val expectedOrderType = "SELL"
+//        val expectedOrderType = SELL
 //
 //        val response = orderRecords.getBestSellOrder(sellOrder.getPrice())
 //
@@ -28,9 +28,9 @@ class OrderRecordsTest{
 //
 //    @Test
 //    fun `should return buy order`(){
-//        val buyOrder = Order(10,"BUY",10,"sankar")
+//        val buyOrder = Order(10,BUY,10,"sankar")
 //        orderRecords.addBuyOrder(buyOrder)
-//        val expectedOrderType = "BUY"
+//        val expectedOrderType = BUY
 //
 //        val response = orderRecords.getBestBuyOrder()
 //
@@ -46,7 +46,7 @@ class OrderRecordsTest{
 //
 //    @Test
 //    fun `it should remove buy order`(){
-//        val buyOrder = Order(10,"BUY",10,"sankar")
+//        val buyOrder = Order(10,BUY,10,"sankar")
 //        orderRecords.addBuyOrder(buyOrder)
 //        val response = orderRecords.getBestBuyOrder()
 //
@@ -57,7 +57,7 @@ class OrderRecordsTest{
 //
 //    @Test
 //    fun `it should remove sell order`(){
-//        val sellOrder = Order(10,"SELL",10,"sankar")
+//        val sellOrder = Order(10,SELL,10,"sankar")
 //        orderRecords.addSellOrder(sellOrder)
 //        val response = orderRecords.getBestSellOrder()
 //

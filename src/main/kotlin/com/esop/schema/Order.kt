@@ -2,11 +2,11 @@ package com.esop.schema
 
 import com.esop.schema.ESOPType.*
 import com.esop.schema.OrderStatus.*
-
+import com.esop.schema.OrderType.*
 
 class Order(
     private var quantity: Long,
-    private var type: String,
+    private var type: OrderType,
     private var price: Long,
     private var userName: String,
     private var esopType: ESOPType = NON_PERFORMANCE
@@ -26,9 +26,9 @@ class Order(
         }
     }
 
-    private fun isTypeSellAndEsopTypePerformance() = type == "SELL" && esopType == PERFORMANCE
+    private fun isTypeSellAndEsopTypePerformance() = type == SELL && esopType == PERFORMANCE
 
-    private fun isTypeSellAndEsopTypeNonPerformance() = type == "SELL" && esopType == NON_PERFORMANCE
+    private fun isTypeSellAndEsopTypeNonPerformance() = type == SELL && esopType == NON_PERFORMANCE
     fun getQuantity(): Long {
         return quantity
     }
@@ -37,7 +37,7 @@ class Order(
         return price
     }
 
-    fun getType(): String {
+    fun getType(): OrderType {
         return type
     }
 

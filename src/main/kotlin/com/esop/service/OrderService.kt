@@ -10,6 +10,7 @@ import jakarta.inject.Singleton
 import kotlin.math.min
 import com.esop.schema.ESOPType.*
 import com.esop.schema.OrderStatus.*
+import com.esop.schema.OrderType.*
 
 @Singleton
 class OrderService(private val userRecords: UserRecords,
@@ -52,7 +53,7 @@ class OrderService(private val userRecords: UserRecords,
     fun placeOrder(order: Order): Long {
         order.orderID = orderRecords.generateOrderId()
 
-        if (order.getType() == "BUY") {
+        if (order.getType() == BUY) {
             executeBuyOrder(order)
         } else {
             executeSellOrder(order)
