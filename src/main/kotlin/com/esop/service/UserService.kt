@@ -105,18 +105,8 @@ class UserService(
 
 
     fun addingInventory(inventoryData: AddInventoryDTO, userName: String): Map<String, Any> {
-        val errorList = mutableListOf<String>()
-
-        if (inventoryData.esopType.toString().uppercase() != "NON_PERFORMANCE" && inventoryData.esopType.toString()
-                .uppercase() != "PERFORMANCE"
-        ) {
-            errorList.add(errors["INVALID_TYPE"].toString())
-        } else if (!userRecords.checkIfUserExists(userName)) {
-            errorList.add(errors["USER_DOES_NOT_EXISTS"].toString())
-        }
-
-        if (errorList.size > 0) {
-            return mapOf("error" to errorList)
+        if (!userRecords.checkIfUserExists(userName)) {
+            throw UserDoesNotExistException()
         }
         return mapOf("message" to userRecords.getUser(userName)!!.addToInventory(inventoryData))
     }
