@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.assertThrows
 import com.esop.schema.ESOPType.*
+import com.esop.schema.OrderType.*
 
 class UserServiceTest {
 
@@ -49,7 +50,7 @@ class UserServiceTest {
     @Test
     fun `should check user doesn't exist before placing Order`() {
         val order = Order(
-            quantity = 10, type = "BUY", price = 10, userName = "Sankar"
+            quantity = 10, type = BUY, price = 10, userName = "Sankar"
         )
 
         val expectedError = "User doesn't exist."
@@ -90,7 +91,7 @@ class UserServiceTest {
         userService.registerUser(user)
         userService.addingMoney(AddWalletDTO(price = 100L), userName = "sankar06")
         val order = Order(
-            quantity = 10, type = "BUY", price = 10, userName = "sankar06"
+            quantity = 10, type = BUY, price = 10, userName = "sankar06"
         )
         assertDoesNotThrow { userService.checkUserDetailsForOrder(order) }
     }
@@ -100,7 +101,7 @@ class UserServiceTest {
         val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
         userService.registerUser(user)
         val order = Order(
-            quantity = 10, type = "BUY", price = 10, userName = "sankar06"
+            quantity = 10, type = BUY, price = 10, userName = "sankar06"
         )
         userService.addingMoney(AddWalletDTO(price = 99L), userName = "sankar06")
 
@@ -113,7 +114,7 @@ class UserServiceTest {
         val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
         userService.registerUser(user)
         val order = Order(
-            quantity = 10, type = "BUY", price = 10, userName = "sankar06"
+            quantity = 10, type = BUY, price = 10, userName = "sankar06"
         )
         userService.addingInventory(AddInventoryDTO(MAX_INVENTORY_CAPACITY, NON_PERFORMANCE), userName = "sankar06")
 
@@ -128,7 +129,7 @@ class UserServiceTest {
         userService.registerUser(user)
         userService.addingInventory(AddInventoryDTO(quantity = 10L), userName = "sankar06")
         val order = Order(
-            quantity = 10, type = "SELL", price = 10, userName = "sankar06"
+            quantity = 10, type = SELL, price = 10, userName = "sankar06"
         )
         assertDoesNotThrow {  userService.checkUserDetailsForOrder(order) }
     }
@@ -139,7 +140,7 @@ class UserServiceTest {
         userService.registerUser(user)
         userService.addingInventory(AddInventoryDTO(quantity = 10L), userName = "sankar06")
         val order = Order(
-            quantity = 29, type = "SELL", price = 10, userName = "sankar06"
+            quantity = 29, type = SELL, price = 10, userName = "sankar06"
         )
 
         val expectedError = "Insufficient non_performance inventory."
@@ -151,7 +152,7 @@ class UserServiceTest {
         val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
         userService.registerUser(user)
         val order = Order(
-            quantity = 10, type = "SELL", price = 10, userName = "sankar06"
+            quantity = 10, type = SELL, price = 10, userName = "sankar06"
         )
         userService.addingMoney(AddWalletDTO(MAX_WALLET_CAPACITY), userName = "sankar06")
 
@@ -166,7 +167,7 @@ class UserServiceTest {
         userService.registerUser(user)
         userService.addingInventory(AddInventoryDTO(quantity = 10L, esopType = PERFORMANCE), userName = "sankar06")
         val order = Order(
-            quantity = 10, type = "SELL", price = 10, userName = "sankar06", PERFORMANCE
+            quantity = 10, type = SELL, price = 10, userName = "sankar06", PERFORMANCE
         )
 
         assertDoesNotThrow { userService.checkUserDetailsForOrder(order) }
@@ -177,7 +178,7 @@ class UserServiceTest {
         val user = UserCreationDTO("Sankar", "M", "+917550276216", "sankar@sahaj.ai", "sankar06")
         userService.registerUser(user)
         val order = Order(
-            quantity = 29, type = "SELL", price = 10, userName = "sankar06", PERFORMANCE
+            quantity = 29, type = SELL, price = 10, userName = "sankar06", PERFORMANCE
         )
 
         val expectedError = "Insufficient performance inventory."
