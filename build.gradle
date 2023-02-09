@@ -29,6 +29,7 @@ dependencies {
     runtimeOnly("com.fasterxml.jackson.module:jackson-module-kotlin")
     testImplementation("org.assertj:assertj-core:3.11.1")
     testImplementation('org.junit.jupiter:junit-jupiter-params:5.1.0')
+    testImplementation("io.micronaut.test:micronaut-test-rest-assured")
     implementation("commons-validator:commons-validator:1.7")
 }
 
