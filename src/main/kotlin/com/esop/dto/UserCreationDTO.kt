@@ -1,7 +1,6 @@
 package com.esop.dto
 
 import com.esop.validator.*
-import com.esop.validators.*
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.micronaut.core.annotation.Introspected
