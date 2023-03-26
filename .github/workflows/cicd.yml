@@ -90,7 +90,8 @@ jobs:
             terraform apply -auto-approve    
             VER=$(terraform output | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\})
             echo VER
-            
+           
+
 
 
 
