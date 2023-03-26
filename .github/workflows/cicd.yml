@@ -88,8 +88,8 @@ jobs:
             cd terraform
             cd ec2
             terraform apply -auto-approve    
-            VER=$(cat private_ips.txt)
-            echo $VER
+            VER=$(terraform output | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\})
+            echo VER
             
 
 
