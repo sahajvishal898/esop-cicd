@@ -88,7 +88,8 @@ jobs:
             cd terraform
             cd ec2
             terraform apply -auto-approve    
-            
+            VER=$(cat private_ips)
+            echo $VER
             
 
 
