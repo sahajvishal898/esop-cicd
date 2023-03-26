@@ -89,6 +89,7 @@ jobs:
             cd ec2
             terraform apply -auto-approve    
             
+            
 
 
 

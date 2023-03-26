@@ -72,6 +72,10 @@ resource "aws_instance" "web_instance" {
   tags = {
     Name = "vishal-gurukul"
   }
+
+  provisioner "local-exec" {
+    command = "echo ${self.public_ip} >> private_ips.txt"
+  }
 }
 
 
