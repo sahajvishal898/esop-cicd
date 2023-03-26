@@ -45,7 +45,7 @@ jobs:
         run: |
           cd terraform
           cd s3
-          terraform apply
+          terraform apply -auto-approve
 
 
 
