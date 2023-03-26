@@ -7,73 +7,73 @@ on:
     branch: "main"
 
 jobs:
-#  terraformS3:
+  terraformS3:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Install Terraform
+        run: |
+          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
+          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+          sudo apt update && sudo apt install terraform
+      - name: Terraform Init
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform init
+
+      - name: Terraform Plan
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform plan
+
+      - name: Terraform Apply
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        run: terraform apply
+
+
+
+
+
+
+#  test:
 #    runs-on: ubuntu-latest
-#    defaults:
-#      run:
-#        shell: bash
 #    steps:
 #      - name: Checkout
 #        uses: actions/checkout@v3
-#      - name: Install Terraform
-#        run: |
-#          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
-#          echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
-#          sudo apt update && sudo apt install terraform
-#      - name: Terraform Init
-#        env:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        run: terraform init
+#      - name: Setup java
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: corretto
+#          java-version: 17
+#      - name: Test
+#        run: ./gradlew test
 #
-#      - name: Terraform Plan
-#        env:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        run: terraform plan
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Setup java
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: corretto
+#          java-version: 17
+#      - name: Build
+#        run: ./gradlew build
+#      - name: Copy jar file to artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: esop-trading-1.0
+#          path: build/libs/esop-0.1-all.jar
 #
-#      - name: Terraform Apply
-#        env:
-#          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-#        run: terraform apply
-
-
-
-
-
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup java
-        uses: actions/setup-java@v3
-        with:
-          distribution: corretto
-          java-version: 17
-      - name: Test
-        run: ./gradlew test
-
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup java
-        uses: actions/setup-java@v3
-        with:
-          distribution: corretto
-          java-version: 17
-      - name: Build
-        run: ./gradlew build
-      - name: Copy jar file to artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: esop-trading-1.0
-          path: build/libs/esop-0.1-all.jar
-
 
 
 
