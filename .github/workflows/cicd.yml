@@ -47,11 +47,12 @@ jobs:
           cd s3
           terraform apply -auto-approve
 
-    terraformEC2:
+  terraformEC2:
       runs-on: ubuntu-latest
       defaults:
         run:
           shell: bash
+
       steps:
         - name: Checkout
           uses: actions/checkout@v3
