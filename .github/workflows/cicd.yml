@@ -49,6 +49,7 @@ jobs:
 
   terraformEC2:
       runs-on: ubuntu-latest
+
       defaults:
         run:
           shell: bash
@@ -87,7 +88,7 @@ jobs:
             cd terraform
             cd ec2
             terraform apply -auto-approve    
-
+            
 
 
 
