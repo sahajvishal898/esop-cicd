@@ -101,37 +101,37 @@ jobs:
           cd terraform
           cd ec2  
           echo ip=$(terraform output instance_public_ip | sed 's/^.//;s/.$//') >> $GITHUB_OUTPUT
-  
+    
 
-  #      - name: Copy jar file to ec2 instance
-  #        id :
-  #        env:
-  #          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-  #          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #        run: |
-  #          cd terraform
-  #          cd ec2
-  #          eval `ssh-agent`
-  #          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-  #          x=$(terraform output instance_public_ip | sed 's/^.//;s/.$//')
-  #          echo $x
-  #          ssh -o StrictHostKeyChecking=no ec2-user@$x
+    #      - name: Copy jar file to ec2 instance
+    #        id :
+    #        env:
+    #          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+    #          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    #          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    #        run: |
+    #          cd terraform
+    #          cd ec2
+    #          eval `ssh-agent`
+    #          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    #          x=$(terraform output instance_public_ip | sed 's/^.//;s/.$//')
+    #          echo $x
+    #          ssh -o StrictHostKeyChecking=no ec2-user@$x
 
 
 
-  #  test:
-  #    runs-on: ubuntu-latest
-  #    steps:
-  #      - name: Checkout
-  #        uses: actions/checkout@v3
-  #      - name: Setup java
-  #        uses: actions/setup-java@v3
-  #        with:
-  #          distribution: corretto
-  #          java-version: 17
-  #      - name: Test
-  #        run: ./gradlew test
+    #  test:
+    #    runs-on: ubuntu-latest
+    #    steps:
+    #      - name: Checkout
+    #        uses: actions/checkout@v3
+    #      - name: Setup java
+    #        uses: actions/setup-java@v3
+    #        with:
+    #          distribution: corretto
+    #          java-version: 17
+    #      - name: Test
+    #        run: ./gradlew test
 
 
     build:
