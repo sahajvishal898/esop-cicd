@@ -99,9 +99,9 @@ jobs:
             cd ec2
             eval `ssh-agent`
             echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-            x=$(terraform output | grep -o '[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}\.[0-9]\{1,3\}')
+            x=$(terraform output instance_public_ip)
             echo $x
-            ssh -o StrictHostKeyChecking=no ec2-user@$x
+            
 
 
 
