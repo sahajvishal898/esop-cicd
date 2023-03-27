@@ -152,7 +152,7 @@ jobs:
 #        with:
 #          name: esop-trading-1.0
 #          path: build/libs/esop-0.1-all.jar
-#
+
 
   deploy:
     needs: ["terraformEC2"]
@@ -167,16 +167,16 @@ jobs:
 #        uses: actions/download-artifact@v3
 #        with:
 #          name: esop-trading-1.0
-     - name: Copy jar file to ec2 instance
-       env:
-        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-        SSH_HOST: ${{needs.terraformEC2.outputs.public_ip}}
+       - name: Copy jar file to ec2 instance
+         env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          SSH_HOST: ${{needs.terraformEC2.outputs.public_ip}}
 
-       run: |
+         run: |
           eval `ssh-agent`
           echo  "$SSH_HOST"
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-#          scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
+          scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
           ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
             
 
