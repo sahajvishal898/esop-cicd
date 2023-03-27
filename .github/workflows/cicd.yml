@@ -167,12 +167,12 @@ jobs:
 #        uses: actions/download-artifact@v3
 #        with:
 #          name: esop-trading-1.0
-      - name: Copy jar file to ec2 instance
-        env:
-          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-          SSH_HOST: ${{needs.terraformEC2.outputs.public_ip}}
+     - name: Copy jar file to ec2 instance
+       env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        SSH_HOST: ${{needs.terraformEC2.outputs.public_ip}}
 
-        run: |
+       run: |
           eval `ssh-agent`
           echo  "$SSH_HOST"
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
