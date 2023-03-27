@@ -177,7 +177,7 @@ jobs:
           eval `ssh-agent`
           echo  "$SSH_HOST"
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-          ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST
+          ssh -t -t -o StrictHostKeyChecking=no ec2-user@$SSH_HOST
         #          scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
 
         
