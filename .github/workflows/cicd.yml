@@ -167,6 +167,10 @@ jobs:
 #        uses: actions/download-artifact@v3
 #        with:
 #          name: esop-trading-1.0
+
+       - name: Checkout
+         uses: actions/checkout@v3
+
        - name: Copy jar file to ec2 instance
          env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -177,7 +181,7 @@ jobs:
           echo  "$SSH_HOST"
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "cd esop-trading" && "chmod +x deploy.sh" && "./deploy.sh"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "chmod +x deploy.sh" && "./deploy.sh"
             
 
 
