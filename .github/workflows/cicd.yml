@@ -156,6 +156,7 @@ jobs:
 
   deploy:
     #needs: "build"
+    needs: "terraformEC2"
     runs-on: ubuntu-latest
     steps:
 #      - name: Setup java
