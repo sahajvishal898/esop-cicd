@@ -174,7 +174,7 @@ jobs:
           SSH_HOST: ${{needs.terraformEC2.outputs.public_ip}}
 
         run: |
-          val `ssh-agent`
+          eval `ssh-agent`
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           ssh -o StrictHostKeyChecking=no ec2-user@$SSH_HOST
           
