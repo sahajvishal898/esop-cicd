@@ -180,8 +180,8 @@ jobs:
           eval `ssh-agent`
           echo  "$SSH_HOST"
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-          scp -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sudo yum install java-17-amazon-corretto"
-          scp -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "sudo yum install java-17-amazon-corretto -y"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
           
             
 
