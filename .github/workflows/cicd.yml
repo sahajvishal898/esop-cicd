@@ -101,7 +101,7 @@ jobs:
             echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
             x=$(terraform output instance_public_ip)
             echo $x
-            
+            ssh -o StrictHostKeyChecking=no ec2-user@$x
 
 
 
