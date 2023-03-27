@@ -181,7 +181,7 @@ jobs:
           echo  "$SSH_HOST"
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
           scp -T -o StrictHostKeyChecking=no deploy.sh ec2-user@$SSH_HOST:~
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "chmod 700 deploy.sh" && "./deploy.sh"
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "chmod +x deploy.sh" && "./deploy.sh"
 
 
 
