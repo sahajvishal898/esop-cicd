@@ -176,7 +176,7 @@ jobs:
 #          echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
 #          scp -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST
 #
-          run: | 
+        run: | 
             echo "$SSH_HOST"
 
 
