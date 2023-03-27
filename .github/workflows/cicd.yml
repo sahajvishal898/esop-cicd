@@ -134,39 +134,39 @@ jobs:
     #        run: ./gradlew test
 
 
-  build:
-    needs: "terraformEC2"
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-      - name: Setup java
-        uses: actions/setup-java@v3
-        with:
-          distribution: corretto
-          java-version: 17
-      - name: Build
-        run: ./gradlew build
-      - name: Copy jar file to artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: esop-trading-1.0
-          path: build/libs/esop-0.1-all.jar
-
+#  build:
+#    needs: "terraformEC2"
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
+#      - name: Setup java
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: corretto
+#          java-version: 17
+#      - name: Build
+#        run: ./gradlew build
+#      - name: Copy jar file to artifacts
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: esop-trading-1.0
+#          path: build/libs/esop-0.1-all.jar
+#
 
   deploy:
-    needs: ["build","terraformEC2"]
+    needs: ["terraformEC2"]
     runs-on: ubuntu-latest
     steps:
-      - name: Setup java
-        uses: actions/setup-java@v3
-        with:
-          distribution: corretto
-          java-version: 17
-      - name: Download jar file
-        uses: actions/download-artifact@v3
-        with:
-          name: esop-trading-1.0
+#      - name: Setup java
+#        uses: actions/setup-java@v3
+#        with:
+#          distribution: corretto
+#          java-version: 17
+#      - name: Download jar file
+#        uses: actions/download-artifact@v3
+#        with:
+#          name: esop-trading-1.0
       - name: Copy jar file to ec2 instance
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -176,10 +176,9 @@ jobs:
           eval `ssh-agent`
           echo  "$SSH_HOST"
           echo "$SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
-          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST
           scp -T -o StrictHostKeyChecking=no "esop-0.1-all.jar" ec2-user@$SSH_HOST:~
-  
-          
+          ssh -T -o StrictHostKeyChecking=no ec2-user@$SSH_HOST -t "java -jar esop-0.1-all.jar"
+            
 
 
 
