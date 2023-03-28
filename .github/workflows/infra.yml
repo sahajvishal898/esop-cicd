@@ -102,4 +102,4 @@ jobs:
 #
   
       - name: call other workflow
-        uses: /.github/workflows/cicd.yml@cicd
+        uses: ./.github/workflows/cicd.yml@cicd
