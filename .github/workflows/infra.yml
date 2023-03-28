@@ -101,3 +101,5 @@ jobs:
           echo ip=$(terraform output instance_public_ip | sed 's/^.//;s/.$//') >> $GITHUB_OUTPUT
   
   
+      - name: call other workflow
+        uses: ./.github/workflows/cicd.yml@cicd
