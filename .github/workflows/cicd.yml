@@ -1,14 +1,12 @@
 
 name: ci-cd
 
-#on:
-#  push:
-#    branchs:
-#      - "cicd"
-#      - "main"
-#
-
-on: workflow_call
+on:
+  push:
+    branchs:
+      - "cicd"
+      - "main"
+  workflow_call:
 
 
 
