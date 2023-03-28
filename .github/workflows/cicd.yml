@@ -7,7 +7,7 @@ on:
       - "cicd"
       - "main"
   workflow_run:
-    workflows: ["create-infra"]
+    workflows: [create-infra]
     types:
       - completed
 
