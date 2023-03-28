@@ -4,7 +4,7 @@ on:
   push:
     branch: "infra"
 
-#jobs:
+jobs:
 #  terraformS3:
 #    runs-on: ubuntu-latest
 #    defaults:
@@ -100,9 +100,7 @@ on:
 #          cd ec2
 #          echo ip=$(terraform output instance_public_ip | sed 's/^.//;s/.$//') >> $GITHUB_OUTPUT
 #
-  
 
-
-jobs:
   cicdn:
-    uses: sahajvishal898/esop-cicd/.github/workflows/cicd.yml@cicd
+    needs: "terraformEC2"
+    uses: ./.github/workflows/cicd.yml@cicd
