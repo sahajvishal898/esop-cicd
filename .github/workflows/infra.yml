@@ -101,6 +101,7 @@ jobs:
           echo ip=$(terraform output instance_public_ip | sed 's/^.//;s/.$//') >> $GITHUB_OUTPUT
 
 
+
   cicdn:
     needs: "terraformEC2"
     uses: sahajvishal898/esop-cicd/.github/workflows/cicd.yml@cicd
