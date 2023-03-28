@@ -103,4 +103,4 @@ jobs:
 
  cicdn:
 
-    uses: ./.github/workflows/cicd.yml@cicd
+    uses: sahajvishal898/esop-cicd/.github/workflows/cicd.yml@cicd
