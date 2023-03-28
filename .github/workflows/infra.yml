@@ -4,7 +4,7 @@ on:
   push:
     branch: "infra"
 
-jobs:
+#jobs:
 #  terraformS3:
 #    runs-on: ubuntu-latest
 #    defaults:
@@ -44,22 +44,20 @@ jobs:
 #          cd terraform
 #          cd s3
 #          terraform apply -auto-approve
-
-  terraformEC2:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        shell: bash
-
-    outputs:
-      public_ip: ${{steps.ip_address.outputs.ip}}
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          ref: cicd
+#
+#  terraformEC2:
+#    runs-on: ubuntu-latest
+#
+#    defaults:
+#      run:
+#        shell: bash
+#
+#    outputs:
+#      public_ip: ${{steps.ip_address.outputs.ip}}
+#
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v3
 #      - name: Install Terraform
 #        run: |
 #          wget -O- https://apt.releases.hashicorp.com/gpg | gpg --dearmor | sudo tee /usr/share/keyrings/hashicorp-archive-keyring.gpg
@@ -103,5 +101,8 @@ jobs:
 #          echo ip=$(terraform output instance_public_ip | sed 's/^.//;s/.$//') >> $GITHUB_OUTPUT
 #
   
-      - name: call other workflow
-        uses: sahajvishal898/esop-cicd/.github/workflows/cicd.yml@cicd
+
+
+jobs:
+  cicdn:
+    uses: sahajvishal898/esop-cicd/.github/workflows/cicd.yml@cicd
