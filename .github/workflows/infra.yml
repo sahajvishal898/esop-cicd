@@ -46,7 +46,6 @@ jobs:
           terraform apply -auto-approve
 
   terraformEC2:
-    needs: "terraformS3"
     runs-on: ubuntu-latest
 
     defaults:
