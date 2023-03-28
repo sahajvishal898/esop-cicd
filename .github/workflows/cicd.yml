@@ -1,15 +1,15 @@
 
 name: ci-cd
 
-on:
-  push:
-    branchs:
-      - "cicd"
-      - "main"
-  workflow_run:
-    workflows: [create-infra]
-    types:
-      - completed
+#on:
+#  push:
+#    branchs:
+#      - "cicd"
+#      - "main"
+#
+
+on: workflow_call
+
 
 
 jobs:
