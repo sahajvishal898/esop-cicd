@@ -99,9 +99,10 @@ jobs:
         run: |
           cd terraform
           cd ec2
+          ip=$(terraform output instance_public_ip)
           mkdir public_ip
           cd public_ip
-          echo ip=$(terraform output instance_public_ip)>> ip.txt
+          echo $ip >> ip.txt
           aws s3 sync . s3://gurukul-vishal-bucket 
    
    
