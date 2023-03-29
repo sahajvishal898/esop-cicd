@@ -27,8 +27,8 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          echo $(aws s3 cp ip.txt s3://gurukul-vishal-bucket)
-          
+          aws s3 cp ip.txt s3://gurukul-vishal-bucket
+          cat ip.txt
 
 #  test:
 #    runs-on: ubuntu-latest
