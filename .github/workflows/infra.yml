@@ -105,6 +105,7 @@ jobs:
           cd ..
           aws s3 sync . s3://gurukul-vishal-bucket 
    
+   
 
   callCICD:
     needs: "terraformEC2"
